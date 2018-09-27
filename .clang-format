@@ -1,3 +1,5 @@
 ---
 Language: Cpp
 ColumnLimit: 80
+BinPackParameters: false
+AlignAfterOpenBracket: AlwaysBreak

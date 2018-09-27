@@ -41,7 +41,7 @@ public:
   // Accepts an OSM file in XML format, parses it to construct the graph.
   void load_from_osm_file(std::string file_name);
 
-private:
+  /* private: */
   int num_nodes_;
   int num_edges_;
 
