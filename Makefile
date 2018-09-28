@@ -9,7 +9,8 @@ TEST_BINARIES = $(wildcard $(TEST_DIR)/*.cc)
 
 # 3rd party libraries
 CATCH = -I ./$(LIB_DIR)/catch/
-LIBS = $(CATCH)
+TINYXML2 = -I ./$(LIB_DIR)/tinyxml2/
+LIBS = $(CATCH) $(TINYXML2)
 
 .PHONY: all
 all: format build run
@@ -25,7 +26,7 @@ clean:
 
 build:
 	# -Werror -> treat every warning as an error
-	g++ -std=c++11 -o main.out -Werror $(MAIN_BINARIES) $(LIBS) -I .
+	g++ -std=c++11 -o main.out -Werror $(MAIN_BINARIES) ./lib/tinyxml2/tinyxml2.cpp $(LIBS) -I .
 
 .PHONY: test
 test:
