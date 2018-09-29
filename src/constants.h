@@ -1,4 +1,9 @@
 #ifndef CONSTANTS_H_
 #define CONSTANTS_H_
 
+int SECONDS_IN_HOUR = 60 * 60;
+
+float METERS_PER_DEGREE_LAT = 111229;
+float METERS_PER_DEGREE_LNG = 71695;
+
 #endif // CONSTANTS_H_

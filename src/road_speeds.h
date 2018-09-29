@@ -6,7 +6,9 @@
 
 using RoadSpeeds = std::unordered_map<std::string, float>;
 
-// Fixed arbitrary km/h values for different 'highway' type ways
+// Fixed arbitrary km/h values for different 'highway' type ways.
+// A number of different types are ignored but should be added for doing walk
+// or bike routing.
 const RoadSpeeds road_speeds = {
     {"motorway", 110},   {"trunk", 110},       {"primary", 70},
     {"secondary", 60},   {"tertiary", 50},     {"motorway_link", 50},

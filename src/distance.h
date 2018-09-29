@@ -8,13 +8,13 @@ const static double earth_radius_km = 6372.8;
 inline double degree_to_radian(double angle) { return angle * (M_PI / 180.0); }
 
 // Return the great-circle distance between two points in KM.
-double haversine(float lat1, float lng1, float lat2, float lng2) {
+double haversine(double lat1, double lng1, double lat2, double lng2) {
   double lat_rad1 = degree_to_radian(lat1);
   double lng_rad1 = degree_to_radian(lng1);
   double lat_rad2 = degree_to_radian(lat2);
   double lng_rad2 = degree_to_radian(lng2);
 
-  double diff_lat = lat_rad2 - lat_rad_1;
+  double diff_lat = lat_rad2 - lat_rad1;
   double diff_lng = lng_rad2 - lng_rad2;
 
   double computation = asin(sqrt(

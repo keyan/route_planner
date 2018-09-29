@@ -7,6 +7,7 @@
 
 #include "tinyxml2.h"
 
+#include "constants.h"
 #include "distance.h"
 #include "road_network.h"
 #include "road_speeds.h"
@@ -36,17 +37,44 @@ void RoadNetwork::add_node(int64_t osm_id, double lat, double lng) {
   }
 }
 
-void RoadNetwork::add_edge(int64_t tail_id, int64_t head_id, float road_speed) {
-  Node* tail_node = nodes_.at(tail_id);
-  Node* head_node = nodes_.at(head_id);
-  double distance = haversine(tail_node->lat_, tail_node->lng_, head_node->lat_, head_node->lng_);
-  int cost = 0;
+void RoadNetwork::add_edge(int64_t tail_id, int64_t head_id, int cost) {
   graph_.at(tail_id)->outgoing_edges_.push_back(Edge(head_id, cost));
   num_edges_++;
 }
 
-int RoadNetwork::calculate_travel_seconds(int64_t tail_id, int64_t head_id) {
+void RoadNetwork::add_way(
+    std::vector<int64_t> node_ids, std::string highway_type) {
+  float road_speed_kmh;
+  RoadSpeeds::const_iterator search = road_speeds.find(highway_type);
+  if (search == road_speeds.end()) {
+    return;
+  } else {
+    road_speed_kmh = search->second;
+  }
+  if (node_ids.size() < 2) {
+    return;
+  }
+  std::vector<int64_t>::const_iterator it = node_ids.begin();
+  int64_t tail_id = *it;
+  int64_t head_id;
+  for (it = std::next(it); it != node_ids.end(); ++it) {
+    head_id = *it;
+    int cost = calculate_travel_seconds(tail_id, head_id, road_speed_kmh);
+    add_edge(tail_id, head_id, cost);
+    tail_id = head_id;
+  }
+}
 
+int RoadNetwork::calculate_travel_seconds(
+    int64_t tail_id, int64_t head_id, float road_speed_kmh) {
+  Node* tail_node = graph_.at(tail_id);
+  Node* head_node = graph_.at(head_id);
+  double distance_km = haversine(
+      tail_node->lat_, tail_node->lng_, head_node->lat_, head_node->lng_);
+  // Rounds to nearest second, maybe this should be in ms instead?
+  int travel_seconds =
+      int(((distance_km / road_speed_kmh) * SECONDS_IN_HOUR) + 0.5);
+  return travel_seconds;
 }
 
 std::string RoadNetwork::as_string() {
@@ -87,7 +115,7 @@ void RoadNetwork::load_from_osm_file(const char* file_name) {
       add_node(
           e->Int64Attribute("id"), e->DoubleAttribute("lon"),
           e->DoubleAttribute("lon"));
-      // Way's have both a nested list of 2+ nodes, and at least one "tag" child
+      // Way have both a nested list of 2+ nodes, and at least one "tag" child
       // that we do care about.
     } else if (osm_element_type == "way") {
       // Only "highway" types are used for road routing, use empty string to
@@ -109,11 +137,8 @@ void RoadNetwork::load_from_osm_file(const char* file_name) {
         }
       }
       // After processing all element for the way, assess whether to keep.
-      if (highway_type != "" && nodes_in_way.size() > 1) {
-        float road_speed_kmh = road_speeds.at(highway_type);
-        for (int i = 1; i < nodes_in_way.size() - 1; i++) {
-          add_edge(nodes_in_way[i], nodes_in_way[i+1], road_speed_kmh);
-        }
+      if (highway_type != "") {
+        add_way(nodes_in_way, highway_type);
       }
       highway_type = "";
       nodes_in_way.clear();
