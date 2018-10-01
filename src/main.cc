@@ -5,7 +5,7 @@
 int main() {
   RoadNetwork road_network = RoadNetwork();
   road_network.load_from_osm_file("data/burlington.osm");
-  /* road_network.load_from_osm_file("data/saarland.osm"); */
+  // road_network.load_from_osm_file("data/saarland.osm");
 
   std::cout << "Number of nodes: " << road_network.num_nodes_ << std::endl;
   std::cout << "Number of edges: " << road_network.num_edges_ << std::endl;

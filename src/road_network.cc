@@ -9,19 +9,9 @@
 
 #include "constants.h"
 #include "distance.h"
+#include "graph_types.h"
 #include "road_network.h"
 #include "road_speeds.h"
-
-Edge::Edge(int64_t head_node_id, int cost) {
-  head_node_osm_id_ = head_node_id;
-  cost_ = cost;
-}
-
-Node::Node(int64_t osm_id, double lat, double lng) {
-  osm_id_ = osm_id;
-  lat_ = lat;
-  lng_ = lng;
-}
 
 RoadNetwork::RoadNetwork() {
   num_nodes_ = 0;
@@ -37,8 +27,8 @@ void RoadNetwork::add_node(int64_t osm_id, double lat, double lng) {
   }
 }
 
-void RoadNetwork::add_edge(int64_t tail_id, int64_t head_id, int cost) {
-  graph_.at(tail_id)->outgoing_edges_.push_back(Edge(head_id, cost));
+void RoadNetwork::add_edge(int64_t tail_id, int64_t head_id, int weight) {
+  graph_.at(tail_id)->outgoing_edges_.push_back(Edge(head_id, weight));
   num_edges_++;
 }
 
@@ -59,8 +49,8 @@ void RoadNetwork::add_way(
   int64_t head_id;
   for (it = std::next(it); it != node_ids.end(); ++it) {
     head_id = *it;
-    int cost = calculate_travel_seconds(tail_id, head_id, road_speed_kmh);
-    add_edge(tail_id, head_id, cost);
+    int weight = calculate_travel_seconds(tail_id, head_id, road_speed_kmh);
+    add_edge(tail_id, head_id, weight);
     tail_id = head_id;
   }
 }
