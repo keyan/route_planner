@@ -8,6 +8,7 @@
 #include "tinyxml2.h"
 
 #include "constants.h"
+#include "dijkstras.h"
 #include "distance.h"
 #include "graph_types.h"
 #include "road_network.h"
@@ -20,7 +21,7 @@ RoadNetwork::RoadNetwork() {
 
 void RoadNetwork::add_node(int64_t osm_id, double lat, double lng) {
   if (graph_.find(osm_id) == graph_.end()) {
-    Node* new_node = new Node(osm_id, lat, lng);
+    Node* const new_node = new Node(osm_id, lat, lng);
     graph_.emplace(osm_id, new_node);
     nodes_.push_back(new_node);
     num_nodes_++;
@@ -78,6 +79,10 @@ std::string RoadNetwork::as_string() {
     output += ") }";
   }
   return output;
+}
+
+void RoadNetwork::reduce_to_largest_connected_component() {
+  Dijkstras dijkstra = Dijkstras(*this);
 }
 
 void RoadNetwork::load_from_osm_file(const char* file_name) {

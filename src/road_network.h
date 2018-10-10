@@ -31,16 +31,19 @@ public:
   // Accepts an OSM file in XML format, parses it to construct the graph.
   void load_from_osm_file(const char* file_name);
 
+  // Reduce graph to largest connected component.
+  void reduce_to_largest_connected_component();
+
   int num_nodes_;
   int num_edges_;
+
+  std::unordered_map<int64_t, Node*> graph_;
+  std::vector<Node*> nodes_;
 
 private:
   // Given two nodes, return the time in seconds to travel between them.
   int calculate_travel_seconds(
       int64_t tail_node_id, int64_t head_node_id, float road_speed_kmh);
-
-  std::unordered_map<int64_t, Node*> graph_;
-  std::vector<Node*> nodes_;
 };
 
 #endif // ROAD_NETWORK_H_
