@@ -25,12 +25,12 @@ public:
   // Set round for connected components determination
   void set_round(int mark);
 
+  // Indicator which node was visited by a particular run of Dijkstras. Useful
+  // for computing the connected components.
+  std::unordered_map<int64_t, int> visited_nodes_;
+
 private:
   RoadNetwork& graph_;
   // Used to delineate connected components
   int round_;
-
-  // Indicator which node was visited by a particular run of Dijkstras. Useful
-  // for computing the connected components.
-  std::unordered_map<int64_t, int> visited_nodes_;
 };

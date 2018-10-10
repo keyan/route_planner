@@ -13,5 +13,7 @@ int Dijkstras::search(int64_t source_node_id, int64_t target_node_id) {
   // pq = std::priority_queue<WeightedNode, std::vector<WeightedNode>,
   // CompareWeightedNodes>; pq.push();
 
-  return 0;
+  return -1;
 }
+
+void Dijkstras::set_round(int mark) { round_ = mark; }

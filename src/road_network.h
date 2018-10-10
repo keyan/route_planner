@@ -12,15 +12,15 @@ class RoadNetwork {
 public:
   RoadNetwork();
 
-  void add_node(int64_t osm_id, double lat, double lng);
-  void add_edge(int64_t tail_id, int64_t head_id, int weight);
+  void add_node(NodeID osm_id, double lat, double lng);
+  void add_edge(int64_t tail_id, NodeID head_id, int weight);
 
   // Add an OSM way to the graph.
   //
   // Ways are represented as a list of N (min 2) node_ids, where the resulting
   // number of edges is N - 1. All the edges in the way are associated with the
   // same highway_type.
-  void add_way(std::vector<int64_t> node_ids, std::string highway_type);
+  void add_way(NodeIDList node_ids, std::string highway_type);
 
   // Return a string representation of the graph for debugging/testing.
   //
@@ -37,13 +37,16 @@ public:
   int num_nodes_;
   int num_edges_;
 
-  std::unordered_map<int64_t, Node*> graph_;
+  std::unordered_map<NodeID, Node*> graph_;
   std::vector<Node*> nodes_;
 
 private:
   // Given two nodes, return the time in seconds to travel between them.
-  int calculate_travel_seconds(
-      int64_t tail_node_id, int64_t head_node_id, float road_speed_kmh);
+  Weight calculate_travel_seconds(
+      NodeID tail_node_id, NodeID head_node_id, float road_speed_kmh);
+
+  // Given a list of nodes to include in the graph, filter all others out.
+  void filter_nodes(NodeIDSet);
 };
 
 #endif // ROAD_NETWORK_H_
