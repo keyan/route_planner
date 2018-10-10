@@ -74,7 +74,7 @@ std::string RoadNetwork::as_string() {
   for (Node* node : nodes_) {
     output += " { " + std::to_string(node->osm_id_) + " (";
     for (Edge edge : node->outgoing_edges_) {
-      output += std::to_string(edge.head_node_osm_id_) + ", ";
+      output += std::to_string(edge.head_node_id_) + ", ";
     }
     output += ") }";
   }
@@ -94,11 +94,13 @@ void RoadNetwork::reduce_to_largest_connected_component() {
     }
   }
 
+  // Initialize [0] entry for each round
   std::vector<NodeIDSet> nodes_by_round;
   for (int i = 0; i < round; ++i) {
     nodes_by_round.push_back({0});
   }
 
+  // Group node_ids by round
   for (auto it : dijkstra.visited_nodes_) {
     nodes_by_round[it.second].insert(it.first);
   }
@@ -116,7 +118,11 @@ void RoadNetwork::filter_nodes(NodeIDSet include_nodes) {
   // Mutate the nodes_ vector while iterating
   while (it != nodes_.end()) {
     if (include_nodes.count((*it)->osm_id_) == 0) {
+      --num_nodes_;
+      num_edges_ -= (*it)->outgoing_edges_.size();
       graph_.erase((*it)->osm_id_);
+      // Cleanup dynamically allocated Node*
+      delete *it;
       // erase() already returns iterator to next element
       it = nodes_.erase(it);
     } else {

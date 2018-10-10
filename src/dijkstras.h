@@ -20,7 +20,7 @@ public:
   // Returns the weight of the shortest path. If called with target node -1,
   // Dijkstra is run until all nodes reachable from the source are settled, in
   // this case the return value is only an exit code.
-  int search(int64_t source_node_id, int64_t target_node_id);
+  Weight search(int64_t source_node_id, int64_t target_node_id);
 
   // Set round for connected components determination
   void set_round(int mark);

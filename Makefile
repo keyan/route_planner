@@ -27,7 +27,7 @@ clean:
 
 build:
 	# -Werror -> treat every warning as an error
-	g++ -std=c++11 -o main.out -Werror $(MAIN_BINARIES) $(TINYXML2_BINARIES) $(LIBS) -I $(SRC_DIR)
+	g++ -g -std=c++11 -o main.out -Werror $(MAIN_BINARIES) $(TINYXML2_BINARIES) $(LIBS) -I $(SRC_DIR)
 
 .PHONY: test
 test:
