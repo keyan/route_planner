@@ -13,7 +13,7 @@ using DistanceMap = std::unordered_map<NodeID, Weight>;
 using NodeMap = std::unordered_map<NodeID, NodeID>;
 
 Weight
-Dijkstras::search(NodeID const source_node_id, NodeID const target_node_id) {
+Dijkstras::search(NodeID const& source_node_id, NodeID const& target_node_id) {
   NodeMap parents = {{source_node_id, -1}};
   NodeMap shortest_path_tree;
   // Store mapping of minimal distance to each visited node.
@@ -63,4 +63,4 @@ Dijkstras::search(NodeID const source_node_id, NodeID const target_node_id) {
   return distances[target_node_id];
 }
 
-void Dijkstras::set_round(int mark) { round_ = mark; }
+void Dijkstras::set_round(int64_t mark) { round_ = mark; }

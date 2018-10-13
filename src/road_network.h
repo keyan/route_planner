@@ -34,6 +34,9 @@ public:
   // Reduce graph to largest connected component.
   void reduce_to_largest_connected_component();
 
+  // Return a random node id from the graph.
+  const Node& get_rand_node();
+
   int num_nodes_;
   int num_edges_;
 

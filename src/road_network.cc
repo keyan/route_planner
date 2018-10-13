@@ -1,4 +1,5 @@
 #include <cstdint>
+#include <cstdlib>
 #include <fstream>
 #include <iostream>
 #include <regex>
@@ -56,6 +57,13 @@ void RoadNetwork::add_way(NodeIDList node_ids, std::string highway_type) {
   }
 }
 
+const Node& RoadNetwork::get_rand_node() {
+  int idx = std::rand() % nodes_.size() + 1;
+  Node const& rand_node = *nodes_[idx];
+
+  return rand_node;
+}
+
 Weight RoadNetwork::calculate_travel_seconds(
     EdgeID tail_id, NodeID head_id, float road_speed_kmh) {
   Node* tail_node = graph_.at(tail_id);
@@ -86,7 +94,7 @@ void RoadNetwork::reduce_to_largest_connected_component() {
 
   // Successive graph search, marking each node with the round that it was
   // visited.
-  int round = 0;
+  int64_t round = 0;
   for (Node* node : nodes_) {
     if (dijkstra.visited_nodes_[node->osm_id_] == -1) {
       dijkstra.search(node->osm_id_, -1);
@@ -96,7 +104,7 @@ void RoadNetwork::reduce_to_largest_connected_component() {
 
   // Initialize [0] entry for each round
   std::vector<NodeIDSet> nodes_by_round;
-  for (int i = 0; i < round; ++i) {
+  for (int64_t i = 0; i < round; ++i) {
     nodes_by_round.push_back({0});
   }
 
@@ -154,7 +162,7 @@ void RoadNetwork::load_from_osm_file(const char* file_name) {
     // do not need and are ignored.
     if (osm_element_type == "node") {
       add_node(
-          e->Int64Attribute("id"), e->DoubleAttribute("lon"),
+          e->Int64Attribute("id"), e->DoubleAttribute("lat"),
           e->DoubleAttribute("lon"));
       // Way have both a nested list of 2+ nodes, and at least one "tag" child
       // that we do care about.
