@@ -1,3 +1,6 @@
 *.swp
 *.out
 *.swo
+logs/
+*.dSYM/
+.vagrant/
