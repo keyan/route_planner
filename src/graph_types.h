@@ -7,7 +7,7 @@
 
 using NodeID = int64_t;
 using EdgeID = int64_t;
-using Weight = int;
+using Weight = int64_t;
 
 using NodeIDList = std::vector<NodeID>;
 using NodeIDSet = std::unordered_set<NodeID>;
@@ -18,7 +18,7 @@ constexpr Weight INF_WEIGHT = std::numeric_limits<Weight>::max();
 //
 // These are constructed from OSM ways.
 struct Edge {
-  Edge(NodeID head_node_id, int weight)
+  Edge(NodeID head_node_id, Weight weight)
       : head_node_id_(head_node_id)
       , weight_(weight) {}
 

@@ -51,7 +51,7 @@ void RoadNetwork::add_way(NodeIDList node_ids, std::string highway_type) {
   NodeID head_id;
   for (it = std::next(it); it != node_ids.end(); ++it) {
     head_id = *it;
-    Weight weight = calculate_travel_seconds(tail_id, head_id, road_speed_kmh);
+    Weight weight = calculate_travel_ms(tail_id, head_id, road_speed_kmh);
     add_edge(tail_id, head_id, weight);
     tail_id = head_id;
   }
@@ -64,16 +64,18 @@ const Node& RoadNetwork::get_rand_node() {
   return rand_node;
 }
 
-Weight RoadNetwork::calculate_travel_seconds(
+Weight RoadNetwork::calculate_travel_ms(
     EdgeID tail_id, NodeID head_id, float road_speed_kmh) {
   Node* tail_node = graph_.at(tail_id);
   Node* head_node = graph_.at(head_id);
   double distance_km = haversine(
       tail_node->lat_, tail_node->lng_, head_node->lat_, head_node->lng_);
-  // Rounds to nearest second, maybe this should be in ms instead?
-  Weight travel_seconds =
-      int(((distance_km / road_speed_kmh) * SECONDS_IN_HOUR) + 0.5);
-  return travel_seconds;
+  // Rounds to nearest ms
+  Weight travel_ms = int(((distance_km / road_speed_kmh) * MS_IN_HOUR) + 0.5);
+  if (travel_ms == 0) {
+    std::cout << tail_id << " " << head_id;
+  }
+  return travel_ms;
 }
 
 std::string RoadNetwork::as_string() {
@@ -108,6 +110,7 @@ void RoadNetwork::reduce_to_largest_connected_component() {
     nodes_by_round.push_back({0});
   }
 
+  std::cout << "..." << std::endl;
   // Group node_ids by round
   for (auto it : dijkstra.visited_nodes_) {
     nodes_by_round[it.second].insert(it.first);

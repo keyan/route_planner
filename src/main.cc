@@ -2,6 +2,7 @@
 #include <ctime>
 #include <iostream>
 
+#include "constants.h"
 #include "dijkstras.h"
 #include "graph_types.h"
 #include "road_network.h"
@@ -27,10 +28,10 @@ int main() {
     Node const& target = road_network.get_rand_node();
 
     Weight result = dijkstra.search(origin.osm_id_, target.osm_id_);
-    std::cout << "origin: " << origin.lat_ << "," << origin.lng_
-              << " target: " << target.lat_ << "," << target.lng_
-              << " time: " << result / 60 << "m" << result % 60 << "s"
-              << std::endl;
+    std::cout << "https://www.google.com/maps/dir/" << origin.lat_ << ","
+              << origin.lng_ << "/" << target.lat_ << "," << target.lng_
+              << " time: " << (result / MS_IN_MINUTE) << "m"
+              << (result / MS_IN_MINUTE) % 60 << "s" << std::endl;
   }
 
   return 0;

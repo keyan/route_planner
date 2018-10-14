@@ -13,7 +13,7 @@ public:
   RoadNetwork();
 
   void add_node(NodeID osm_id, double lat, double lng);
-  void add_edge(int64_t tail_id, NodeID head_id, int weight);
+  void add_edge(NodeID tail_id, NodeID head_id, Weight weight);
 
   // Add an OSM way to the graph.
   //
@@ -45,7 +45,7 @@ public:
 
 private:
   // Given two nodes, return the time in seconds to travel between them.
-  Weight calculate_travel_seconds(
+  Weight calculate_travel_ms(
       NodeID tail_node_id, NodeID head_node_id, float road_speed_kmh);
 
   // Given a list of nodes to include in the graph, filter all others out.

@@ -1,7 +1,8 @@
 #ifndef CONSTANTS_H_
 #define CONSTANTS_H_
 
-int const SECONDS_IN_HOUR = 60 * 60;
+int const MS_IN_MINUTE = 60 * 1000;
+int const MS_IN_HOUR = 60 * MS_IN_MINUTE;
 
 float const METERS_PER_DEGREE_LAT = 111229;
 float const METERS_PER_DEGREE_LNG = 71695;
