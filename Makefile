@@ -37,6 +37,9 @@ clean:
 build:
 	g++ -g -std=c++11 -o main.out -Werror $(MAIN_BINARIES) $(TINYXML2_BINARIES) $(LIBS) -I $(SRC_DIR)
 
+valgrind: build
+	valgrind --leak-check=full ./main.out
+
 .PHONY: test
 test:
 	g++ -std=c++11 -o tests.out -Werror $(SOURCE_BINARIES) $(TEST_BINARIES) $(TINYXML2_BINARIES) $(LIBS) -I $(SRC_DIR)
