@@ -3,25 +3,27 @@
 
 #include <math.h>
 
-const static double earth_radius_km = 6372.8;
+#include "constants.h"
 
-inline double degree_to_radian(double angle) { return angle * (M_PI / 180.0); }
+inline double degree_to_radian(double angle) { return angle * M_PI / 180.0; }
 
 // Return the great-circle distance between two points in KM.
-double haversine(double lat1, double lng1, double lat2, double lng2) {
+inline double haversine(double lat1, double lng1, double lat2, double lng2) {
   double lat_rad1 = degree_to_radian(lat1);
   double lng_rad1 = degree_to_radian(lng1);
   double lat_rad2 = degree_to_radian(lat2);
   double lng_rad2 = degree_to_radian(lng2);
 
   double diff_lat = lat_rad2 - lat_rad1;
-  double diff_lng = lng_rad2 - lng_rad2;
+  double diff_lng = lng_rad2 - lng_rad1;
 
-  double computation = asin(sqrt(
-      sin(diff_lat / 2) * sin(diff_lat / 2) +
-      cos(lat_rad1) * cos(lat_rad2) * sin(diff_lng / 2) * sin(diff_lng / 2)));
+  double u = sin(diff_lat / 2.0);
+  double v = sin(diff_lng / 2.0);
 
-  return 2 * earth_radius_km * computation;
+  double computation =
+      asin(sqrt(u * u + cos(lat_rad1) * cos(lat_rad2) * v * v));
+
+  return 2.0 * EARTH_RADIUS_KM * computation;
 }
 
 #endif // DISTANCE_H_

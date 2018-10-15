@@ -1,6 +1,8 @@
 #ifndef CONSTANTS_H_
 #define CONSTANTS_H_
 
+static double const EARTH_RADIUS_KM = 6371.0;
+
 int const MS_IN_MINUTE = 60 * 1000;
 int const MS_IN_HOUR = 60 * MS_IN_MINUTE;
 

@@ -72,9 +72,6 @@ Weight RoadNetwork::calculate_travel_ms(
       tail_node->lat_, tail_node->lng_, head_node->lat_, head_node->lng_);
   // Rounds to nearest ms
   Weight travel_ms = int(((distance_km / road_speed_kmh) * MS_IN_HOUR) + 0.5);
-  if (travel_ms == 0) {
-    std::cout << tail_id << " " << head_id;
-  }
   return travel_ms;
 }
 
