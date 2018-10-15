@@ -40,7 +40,7 @@ public:
   int num_nodes_;
   int num_edges_;
 
-  std::unordered_map<NodeID, Node*> graph_;
+  std::unordered_map<NodeID, Node> graph_;
   std::vector<Node*> nodes_;
 
 private:

@@ -31,7 +31,7 @@ Dijkstras::search(NodeID const& source_node_id, NodeID const& target_node_id) {
     node_queue.pop();
 
     NodeID const& curr_node_id = curr_w_node.node_id_;
-    Node const& curr_node = *(graph_.graph_[curr_node_id]);
+    Node const& curr_node = graph_.graph_.at(curr_node_id);
 
     // Add removed node to shortest path tree.
     shortest_path_tree[curr_node_id] = parents[curr_node_id];

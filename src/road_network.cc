@@ -23,15 +23,14 @@ RoadNetwork::RoadNetwork() {
 
 void RoadNetwork::add_node(NodeID osm_id, double lat, double lng) {
   if (graph_.find(osm_id) == graph_.end()) {
-    Node* const new_node = new Node(osm_id, lat, lng);
-    graph_.emplace(osm_id, new_node);
-    nodes_.push_back(new_node);
+    graph_.emplace(osm_id, Node(osm_id, lat, lng));
+    nodes_.push_back(&graph_.at(osm_id));
     num_nodes_++;
   }
 }
 
 void RoadNetwork::add_edge(EdgeID tail_id, NodeID head_id, Weight weight) {
-  graph_.at(tail_id)->outgoing_edges_.push_back(Edge(head_id, weight));
+  graph_.at(tail_id).outgoing_edges_.push_back(Edge(head_id, weight));
   num_edges_++;
 }
 
@@ -66,10 +65,10 @@ const Node& RoadNetwork::get_rand_node() {
 
 Weight RoadNetwork::calculate_travel_ms(
     EdgeID tail_id, NodeID head_id, float road_speed_kmh) {
-  Node* tail_node = graph_.at(tail_id);
-  Node* head_node = graph_.at(head_id);
-  double distance_km = haversine(
-      tail_node->lat_, tail_node->lng_, head_node->lat_, head_node->lng_);
+  Node const& tail_node = graph_.at(tail_id);
+  Node const& head_node = graph_.at(head_id);
+  double distance_km =
+      haversine(tail_node.lat_, tail_node.lng_, head_node.lat_, head_node.lng_);
   // Rounds to nearest ms
   Weight travel_ms = int(((distance_km / road_speed_kmh) * MS_IN_HOUR) + 0.5);
   return travel_ms;
@@ -128,6 +127,7 @@ void RoadNetwork::filter_nodes(NodeIDSet include_nodes) {
     if (include_nodes.count((*it)->osm_id_) == 0) {
       --num_nodes_;
       num_edges_ -= (*it)->outgoing_edges_.size();
+      // TODO -- oops, delete edges too
       graph_.erase((*it)->osm_id_);
       // Cleanup dynamically allocated Node*
       delete *it;
