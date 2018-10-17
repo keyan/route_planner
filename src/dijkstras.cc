@@ -23,11 +23,7 @@ Dijkstras::search(NodeID const& source_node_id, NodeID const& target_node_id) {
   NodeMap shortest_path_tree;
 
   // Store mapping of minimal distance to each visited node.
-  DistanceMap distances;
-  for (Node* node : graph_.nodes_) {
-    distances[node->osm_id_] = INF_WEIGHT;
-  }
-  distances[source_node_id] = 0;
+  DistanceMap distances = {{source_node_id, 0}};
 
   MinHeapPriorityQueue node_queue;
 
@@ -56,8 +52,10 @@ Dijkstras::search(NodeID const& source_node_id, NodeID const& target_node_id) {
       NodeID const& adj_node_id = adj_edge.head_node_id_;
 
       if (shortest_path_tree.count(adj_node_id) == 0) {
+        Weight const& curr_weight =
+            distances.insert(std::make_pair(adj_node_id, INF_WEIGHT))
+                .first->second;
         // Relax edge
-        Weight const& curr_weight = distances[adj_node_id];
         if (curr_weight > (distances[curr_node_id] + adj_edge.weight_)) {
           distances[adj_node_id] = distances[curr_node_id] + adj_edge.weight_;
           parents[adj_node_id] = curr_node_id;
@@ -70,8 +68,11 @@ Dijkstras::search(NodeID const& source_node_id, NodeID const& target_node_id) {
 
   if (target_node_id == -1) {
     return 0;
+  } else if (distances.count(target_node_id) == 0) {
+    return INF_WEIGHT;
+  } else {
+    return distances[target_node_id];
   }
-  return distances[target_node_id];
 }
 
 void Dijkstras::set_round(int64_t mark) { round_ = mark; }

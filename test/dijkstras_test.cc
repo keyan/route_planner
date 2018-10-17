@@ -97,3 +97,13 @@ TEST_CASE("Search finds path", "[Dijkstra]") {
   result = dijkstra.search(3, 5);
   REQUIRE(result == 1);
 }
+
+TEST_CASE("Disconnected nodes return INF_WEIGHT", "[Dijkstra]") {
+  RoadNetwork road_network = default_road_network();
+
+  Dijkstras dijkstra = Dijkstras(road_network);
+  Weight result;
+
+  result = dijkstra.search(1, 8);
+  REQUIRE(result == INF_WEIGHT);
+}
