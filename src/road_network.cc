@@ -129,8 +129,6 @@ void RoadNetwork::filter_nodes(NodeIDSet include_nodes) {
       num_edges_ -= (*it)->outgoing_edges_.size();
       // TODO -- oops, delete edges too
       graph_.erase((*it)->osm_id_);
-      // Cleanup dynamically allocated Node*
-      delete *it;
       // erase() already returns iterator to next element
       it = nodes_.erase(it);
     } else {

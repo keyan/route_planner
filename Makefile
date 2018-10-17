@@ -27,6 +27,7 @@ all: format build run
 format:
 	$(CLANG_FORMAT_BIN) -i $(SRC_DIR)/*.cc
 	$(CLANG_FORMAT_BIN) -i $(SRC_DIR)/*.h
+	$(CLANG_FORMAT_BIN) -i $(TEST_DIR)/*.cc
 
 clean:
 	rm -rf *.out
@@ -42,12 +43,8 @@ valgrind: build
 
 .PHONY: test
 test:
-	g++ -std=c++11 -o tests.out -Werror $(SOURCE_BINARIES) $(TEST_BINARIES) $(TINYXML2_BINARIES) $(LIBS) -I $(SRC_DIR)
-	./tests.out
-
-test_debug:
-	g++ -g -std=c++11 -o tests.out -Werror $(TEST_BINARIES) $(LIBS) -I ./src/*.cc
-	gdb ./tests.out
+	g++ -g -std=c++11 -o tests.out -Werror $(SOURCE_BINARIES) $(TEST_BINARIES) $(TINYXML2_BINARIES) $(LIBS) -I $(SRC_DIR)
+	./tests.out $(TEST_TAGS)
 
 run:
 	./main.out

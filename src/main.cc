@@ -23,7 +23,7 @@ int main() {
   std::cout << "LCC # of edges: " << road_network.num_edges_ << std::endl;
 
   Dijkstras dijkstra = Dijkstras(road_network);
-  for (int i = 0; i < 5; i++) {
+  for (int i = 0; i < 100; i++) {
     Node const& origin = road_network.get_rand_node();
     Node const& target = road_network.get_rand_node();
 

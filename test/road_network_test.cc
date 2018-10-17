@@ -38,13 +38,15 @@ TEST_CASE("Add ways", "[]") {
 
   road_network.add_way({1, 2, 3}, "trunk");
   road_network.add_way({2, 1}, "trunk");
-  REQUIRE(road_network.as_string() == "3 3 { 1 (2, ) } { 2 (3, 1, ) } { 3 () }");
+  REQUIRE(
+      road_network.as_string() == "3 3 { 1 (2, ) } { 2 (3, 1, ) } { 3 () }");
 }
 
 TEST_CASE("Load XML OSM file", "[]") {
   RoadNetwork road_network = RoadNetwork();
   road_network.load_from_osm_file("test/data/test.osm");
 
-  REQUIRE(road_network.as_string() ==
+  REQUIRE(
+      road_network.as_string() ==
       "5 5 { 1 (2, ) } { 2 (3, ) } { 3 (4, 1, ) } { 4 (5, ) } { 5 () }");
 }

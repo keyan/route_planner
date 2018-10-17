@@ -32,5 +32,5 @@ public:
 private:
   RoadNetwork& graph_;
   // Used to delineate connected components
-  int64_t round_;
+  int64_t round_ = 0;
 };
