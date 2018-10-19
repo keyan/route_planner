@@ -1,21 +1,54 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <osm version="0.6" generator="CGImap 0.6.1 (1988 thorn-01.openstreetmap.org)" copyright="OpenStreetMap and contributors" attribution="http://www.openstreetmap.org/copyright" license="http://opendatacommons.org/licenses/odbl/1-0/">
+  <!---
+   Construct a shared graph for testing:
+
+   1 -> 2
+   |
+   - -> 3 -> 4
+   |    |
+   V    |
+   5 <- - -> 6
+
+   7 -> 8
+  -->
  <node id="1" visible="true" version="5" changeset="18790659" timestamp="2013-11-08T22:02:21Z" user="dolphinling" uid="54247" lat="44.4647003" lon="-73.2076992"/>
  <node id="2" visible="true" version="3" changeset="3269767" timestamp="2009-12-02T07:31:35Z" user="woodpeck_fixbot" uid="147510" lat="44.4693030" lon="-73.2051530"/>
  <node id="3" visible="true" version="2" changeset="3269767" timestamp="2009-12-02T07:31:35Z" user="woodpeck_fixbot" uid="147510" lat="44.4691910" lon="-73.2050130"/>
  <node id="4" visible="true" version="2" changeset="2205837" timestamp="2009-08-19T21:44:41Z" user="woodpeck_fixbot" uid="147510" lat="44.4691220" lon="-73.2049470"/>
  <node id="5" visible="true" version="2" changeset="3269767" timestamp="2009-12-02T07:31:35Z" user="woodpeck_fixbot" uid="147510" lat="44.4690570" lon="-73.2048940"/>
+ <node id="6" visible="true" version="2" changeset="3269767" timestamp="2009-12-02T07:31:35Z" user="woodpeck_fixbot" uid="147510" lat="44.4690570" lon="-73.2048940"/>
+ <node id="7" visible="true" version="2" changeset="3269767" timestamp="2009-12-02T07:31:35Z" user="woodpeck_fixbot" uid="147510" lat="44.4690570" lon="-73.2048940"/>
+ <node id="8" visible="true" version="2" changeset="3269767" timestamp="2009-12-02T07:31:35Z" user="woodpeck_fixbot" uid="147510" lat="44.4690570" lon="-73.2048940"/>
  <way id="way_1" visible="true" version="5" changeset="35252575" timestamp="2015-11-12T00:52:19Z" user="Adam Franco" uid="27832">
   <nd ref="1"/>
   <nd ref="2"/>
-  <nd ref="3"/>
-  <nd ref="4"/>
-  <nd ref="5"/>
   <tag k="highway" v="residential"/>
  </way>
  <way id="way_2" visible="true" version="5" changeset="35252575" timestamp="2015-11-12T00:52:19Z" user="Adam Franco" uid="27832">
-  <nd ref="3"/>
   <nd ref="1"/>
+  <nd ref="3"/>
+  <nd ref="4"/>
+  <tag k="highway" v="residential"/>
+ </way>
+ <way id="way_3" visible="true" version="5" changeset="35252575" timestamp="2015-11-12T00:52:19Z" user="Adam Franco" uid="27832">
+  <nd ref="1"/>
+  <nd ref="5"/>
+  <tag k="highway" v="residential"/>
+ </way>
+ <way id="way_4" visible="true" version="5" changeset="35252575" timestamp="2015-11-12T00:52:19Z" user="Adam Franco" uid="27832">
+  <nd ref="3"/>
+  <nd ref="5"/>
+  <tag k="highway" v="residential"/>
+ </way>
+ <way id="way_5" visible="true" version="5" changeset="35252575" timestamp="2015-11-12T00:52:19Z" user="Adam Franco" uid="27832">
+  <nd ref="3"/>
+  <nd ref="6"/>
+  <tag k="highway" v="residential"/>
+ </way>
+ <way id="way_6" visible="true" version="5" changeset="35252575" timestamp="2015-11-12T00:52:19Z" user="Adam Franco" uid="27832">
+  <nd ref="7"/>
+  <nd ref="8"/>
   <tag k="highway" v="residential"/>
  </way>
  <way id="19685372" visible="true" version="5" changeset="35252575" timestamp="2015-11-12T00:52:19Z" user="Adam Franco" uid="27832">

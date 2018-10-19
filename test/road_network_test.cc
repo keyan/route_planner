@@ -48,5 +48,23 @@ TEST_CASE("Load XML OSM file", "[]") {
 
   REQUIRE(
       road_network.as_string() ==
-      "5 5 { 1 (2, ) } { 2 (3, ) } { 3 (4, 1, ) } { 4 (5, ) } { 5 () }");
+      "8 7 { 1 (2, 3, 5, ) } { 2 () } { 3 (4, 5, 6, ) } { 4 () } { 5 () } { 6 "
+      "() } { 7 (8, ) } { 8 () }");
+}
+
+TEST_CASE("Reduce XML graph to LCC", "[]") {
+  RoadNetwork road_network = RoadNetwork();
+  road_network.load_from_osm_file("test/data/test.osm");
+
+  REQUIRE(
+      road_network.as_string() ==
+      "8 7 { 1 (2, 3, 5, ) } { 2 () } { 3 (4, 5, 6, ) } { 4 () } { 5 () } { 6 "
+      "() } { 7 (8, ) } { 8 () }");
+
+  road_network.reduce_to_largest_connected_component();
+
+  REQUIRE(
+      road_network.as_string() ==
+      "6 6 { 1 (2, 3, 5, ) } { 2 () } { 3 (4, 5, 6, ) } { 4 () } { 5 () } { 6 "
+      "() }");
 }
