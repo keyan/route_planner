@@ -43,7 +43,7 @@ valgrind: build
 
 .PHONY: test
 test:
-	g++ -g -std=c++11 -o tests.out -Werror $(SOURCE_BINARIES) $(TEST_BINARIES) $(TINYXML2_BINARIES) $(LIBS) -I $(SRC_DIR)
+	g++ -g -std=c++11 -o tests.out -Werror $(SOURCE_BINARIES) $(TEST_BINARIES) $(TINYXML2_BINARIES) $(LIBS) -I $(SRC_DIR) -I $(TEST_DIR)
 	./tests.out $(TEST_TAGS)
 
 run:
