@@ -45,6 +45,11 @@ Dijkstras::search(NodeID const& source_node_id, NodeID const& target_node_id) {
 
     // Add removed node to shortest path tree.
     shortest_path_tree[curr_node_id] = parents[curr_node_id];
+
+    if (curr_node_id == target_node_id) {
+      break;
+    }
+
     // Mark round visted for connected component determination.
     visited_nodes_[curr_node_id] = round_;
 

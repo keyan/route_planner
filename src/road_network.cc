@@ -106,7 +106,6 @@ void RoadNetwork::reduce_to_largest_connected_component() {
     nodes_by_round.push_back({0});
   }
 
-  std::cout << "..." << std::endl;
   // Group node_ids by round
   for (auto it : dijkstra.visited_nodes_) {
     nodes_by_round[it.second].insert(it.first);

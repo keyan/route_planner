@@ -23,9 +23,11 @@ int main() {
   std::cout << "LCC # of edges: " << road_network.num_edges_ << std::endl;
 
   Dijkstras dijkstra = Dijkstras(road_network);
-  for (int i = 0; i < 100; i++) {
+  for (int i = 0; i < 10; i++) {
     Node const& origin = road_network.get_rand_node();
     Node const& target = road_network.get_rand_node();
+    // Node const& origin = road_network.graph_.at(204491045);
+    // Node const& target = road_network.graph_.at(2508456005);
 
     Weight result = dijkstra.search(origin.osm_id_, target.osm_id_);
     std::cout << "https://www.google.com/maps/dir/" << origin.lat_ << ","
