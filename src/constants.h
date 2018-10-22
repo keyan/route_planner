@@ -3,7 +3,8 @@
 
 static double const EARTH_RADIUS_KM = 6371.0;
 
-int const MS_IN_MINUTE = 60 * 1000;
+int const MS_IN_SEC = 1000;
+int const MS_IN_MINUTE = 60 * MS_IN_SEC;
 int const MS_IN_HOUR = 60 * MS_IN_MINUTE;
 
 float const METERS_PER_DEGREE_LAT = 111229;
