@@ -1,3 +1,4 @@
+#include <algorithm>
 #include <cstdint>
 #include <cstdlib>
 #include <fstream>
@@ -30,8 +31,12 @@ void RoadNetwork::add_node(NodeID osm_id, double lat, double lng) {
 }
 
 void RoadNetwork::add_edge(EdgeID tail_id, NodeID head_id, Weight weight) {
+  // Add an edge for both directions, but only increment edge count by 1.
+  // Edge count is used to track number of undirected edges, although
+  // internally we are representing each undirected edge as two directed edges.
   graph_.at(tail_id).outgoing_edges_.push_back(Edge(head_id, weight));
-  num_edges_++;
+  graph_.at(head_id).outgoing_edges_.push_back(Edge(tail_id, weight));
+  num_edges_ += 2;
 }
 
 void RoadNetwork::add_way(NodeIDList node_ids, std::string highway_type) {
@@ -112,7 +117,7 @@ void RoadNetwork::reduce_to_largest_connected_component() {
   }
 
   // Fetch the round with the most visited nodes
-  std::vector<NodeIDSet>::iterator it = max_element(
+  std::vector<NodeIDSet>::iterator it = std::max_element(
       nodes_by_round.begin(), nodes_by_round.end(),
       [](NodeIDSet& A, NodeIDSet& B) { return A.size() < B.size(); });
 
@@ -126,7 +131,6 @@ void RoadNetwork::filter_nodes(NodeIDSet include_nodes) {
     if (include_nodes.count((*it)->osm_id_) == 0) {
       --num_nodes_;
       num_edges_ -= (*it)->outgoing_edges_.size();
-      // TODO -- oops, delete edges too
       graph_.erase((*it)->osm_id_);
       // erase() already returns iterator to next element
       it = nodes_.erase(it);
