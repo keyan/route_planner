@@ -60,12 +60,13 @@ Dijkstras::search(NodeID const& source_node_id, NodeID const& target_node_id) {
         Weight const& curr_weight =
             distances.insert(std::make_pair(adj_node_id, INF_WEIGHT))
                 .first->second;
+        Weight new_weight = distances[curr_node_id] + adj_edge.weight_;
         // Relax edge
-        if (curr_weight > (distances[curr_node_id] + adj_edge.weight_)) {
-          distances[adj_node_id] = distances[curr_node_id] + adj_edge.weight_;
+        if (curr_weight > new_weight) {
+          distances[adj_node_id] = new_weight;
           parents[adj_node_id] = curr_node_id;
 
-          node_queue.emplace(WeightedNode(adj_node_id, distances[adj_node_id]));
+          node_queue.emplace(WeightedNode(adj_node_id, new_weight));
         }
       }
     }
