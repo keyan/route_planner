@@ -48,8 +48,8 @@ TEST_CASE("Verify default road_network", "[Dijkstra]") {
   RoadNetwork road_network = default_road_network();
   REQUIRE(
       road_network.as_string() ==
-      "8 7 { 1 (2, 3, 5, ) } { 2 () } { 3 (4, 5, 6, ) } { 4 () } { 5 () } { 6 "
-      "() } { 7 (8, ) } { 8 () }");
+      "8 14 { 1 (2, 3, 5, ) } { 2 (1, ) } { 3 (1, 4, 5, 6, ) } { 4 (3, ) } { 5 "
+      "(1, 3, ) } { 6 (3, ) } { 7 (8, ) } { 8 (7, ) }");
 }
 
 TEST_CASE("Min-heap priority queue", "[DS]") {

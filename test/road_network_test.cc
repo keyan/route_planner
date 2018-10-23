@@ -23,12 +23,14 @@ TEST_CASE("Add edges", "[]") {
   road_network.add_node(2, UNUSED_LAT_LNG, UNUSED_LAT_LNG);
 
   road_network.add_edge(1, 2, 30);
-  REQUIRE(road_network.as_string() == "2 1 { 1 (2, ) } { 2 () }");
+  REQUIRE(road_network.as_string() == "2 2 { 1 (2, ) } { 2 (1, ) }");
 
   road_network.add_edge(1, 2, 15);
   road_network.add_edge(2, 1, 20);
   road_network.add_edge(2, 1, 10);
-  REQUIRE(road_network.as_string() == "2 4 { 1 (2, 2, ) } { 2 (1, 1, ) }");
+  REQUIRE(
+      road_network.as_string() ==
+      "2 8 { 1 (2, 2, 2, 2, ) } { 2 (1, 1, 1, 1, ) }");
 }
 
 TEST_CASE("Add ways produces correct graph", "[]") {
@@ -41,7 +43,8 @@ TEST_CASE("Add ways produces correct graph", "[]") {
   road_network.add_way({1, 2, 3}, "trunk");
   road_network.add_way({2, 1}, "trunk");
   REQUIRE(
-      road_network.as_string() == "3 3 { 1 (2, ) } { 2 (3, 1, ) } { 3 () }");
+      road_network.as_string() ==
+      "3 6 { 1 (2, 2, ) } { 2 (1, 3, 1, ) } { 3 (2, ) }");
 }
 
 TEST_CASE("Add ways produces edges with correct weight", "[]") {
@@ -66,11 +69,11 @@ TEST_CASE("Calculate travel time accurate", "[]") {
 }
 
 TEST_CASE("Reduce to LCC", "[]") {
-  // 1 -> 2
+  // 1 - 2
   //
-  // 3 -> 4
+  // 3 - 4
   //
-  // 5 -> 6 -> 7
+  // 5 - 6 - 7
   RoadNetwork road_network = RoadNetwork();
   road_network.add_node(1, UNUSED_LAT_LNG, UNUSED_LAT_LNG);
   road_network.add_node(2, UNUSED_LAT_LNG, UNUSED_LAT_LNG);
@@ -85,12 +88,14 @@ TEST_CASE("Reduce to LCC", "[]") {
   road_network.add_edge(5, 6, 1);
   road_network.add_edge(6, 7, 1);
   REQUIRE(
-      road_network.as_string() == "7 4 { 1 (2, ) } { 2 () } { 3 (4, ) } { 4 () "
-                                  "} { 5 (6, ) } { 6 (7, ) } { 7 () }");
+      road_network.as_string() ==
+      "7 8 { 1 (2, ) } { 2 (1, ) } { 3 (4, ) } { 4 (3, ) } { 5 (6, ) } { 6 (5, "
+      "7, ) } { 7 (6, ) }");
 
   road_network.reduce_to_largest_connected_component();
 
-  REQUIRE(road_network.as_string() == "3 2 { 5 (6, ) } { 6 (7, ) } { 7 () }");
+  REQUIRE(
+      road_network.as_string() == "3 4 { 5 (6, ) } { 6 (5, 7, ) } { 7 (6, ) }");
 }
 
 TEST_CASE("Load XML OSM file", "[]") {
@@ -99,8 +104,8 @@ TEST_CASE("Load XML OSM file", "[]") {
 
   REQUIRE(
       road_network.as_string() ==
-      "8 7 { 1 (2, 3, 5, ) } { 2 () } { 3 (4, 5, 6, ) } { 4 () } { 5 () } { 6 "
-      "() } { 7 (8, ) } { 8 () }");
+      "8 14 { 1 (2, 3, 5, ) } { 2 (1, ) } { 3 (1, 4, 5, 6, ) } { 4 (3, ) } { 5 "
+      "(1, 3, ) } { 6 (3, ) } { 7 (8, ) } { 8 (7, ) }");
 }
 
 TEST_CASE("Reduce XML graph to LCC", "[]") {
@@ -109,15 +114,15 @@ TEST_CASE("Reduce XML graph to LCC", "[]") {
 
   REQUIRE(
       road_network.as_string() ==
-      "8 7 { 1 (2, 3, 5, ) } { 2 () } { 3 (4, 5, 6, ) } { 4 () } { 5 () } { 6 "
-      "() } { 7 (8, ) } { 8 () }");
+      "8 14 { 1 (2, 3, 5, ) } { 2 (1, ) } { 3 (1, 4, 5, 6, ) } { 4 (3, ) } { 5 "
+      "(1, 3, ) } { 6 (3, ) } { 7 (8, ) } { 8 (7, ) }");
 
   road_network.reduce_to_largest_connected_component();
 
   REQUIRE(
       road_network.as_string() ==
-      "6 6 { 1 (2, 3, 5, ) } { 2 () } { 3 (4, 5, 6, ) } { 4 () } { 5 () } { 6 "
-      "() }");
+      "6 12 { 1 (2, 3, 5, ) } { 2 (1, ) } { 3 (1, 4, 5, 6, ) } { 4 (3, ) } { 5 "
+      "(1, 3, ) } { 6 (3, ) }");
 
   // nodes_ vector is updated post-LCC filtering
   std::vector<int> expected_node_ids = {1, 2, 3, 4, 5, 6};
