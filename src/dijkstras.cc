@@ -34,7 +34,7 @@ Dijkstras::search(NodeID const& source_node_id, NodeID const& target_node_id) {
     node_queue.pop();
 
     NodeID const& curr_node_id = curr_w_node.node_id_;
-    Node const& curr_node = graph_.graph_.at(curr_node_id);
+    Node const& curr_node = graph_.graph_[curr_node_id];
 
     // std::priority_queue has no decrease-weight operation, instead do a "lazy
     // deletion" by keeping the old node in the pq and just ignoring it when it

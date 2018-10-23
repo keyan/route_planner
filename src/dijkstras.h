@@ -8,11 +8,9 @@
 class Dijkstras {
 public:
   Dijkstras(RoadNetwork& graph)
-      : graph_(graph) {
-    // Initialize connected component map
-    for (Node* node : graph_.nodes_) {
-      visited_nodes_[node->osm_id_] = -1;
-    }
+      : graph_(graph)
+      , visited_nodes_(graph.graph_.size(), -1) {
+    ;
   }
 
   // Compute the shortest path from the single source to single destination.
@@ -27,7 +25,7 @@ public:
 
   // Indicator which node was visited by a particular run of Dijkstras. Useful
   // for computing the connected components.
-  std::unordered_map<NodeID, int64_t> visited_nodes_;
+  std::vector<int64_t> visited_nodes_;
 
 private:
   RoadNetwork& graph_;

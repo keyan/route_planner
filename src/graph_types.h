@@ -22,6 +22,11 @@ struct Edge {
       : head_node_id_(head_node_id)
       , weight_(weight) {}
 
+  Edge(const Edge& that) {
+    head_node_id_ = that.head_node_id_;
+    weight_ = that.weight_;
+  }
+
   NodeID head_node_id_;
   // Travel time in seconds.
   Weight weight_;
@@ -29,11 +34,25 @@ struct Edge {
 
 // Represents a single vertex in the graph, maps directly to an OSM node.
 struct Node {
-  Node(NodeID osm_id, double lat, double lng)
-      : osm_id_(osm_id)
+  Node(NodeID id, NodeID osm_id, double lat, double lng)
+      : id_(id)
+      , osm_id_(osm_id)
       , lat_(lat)
       , lng_(lng) {}
 
+  Node(const Node& that) {
+    id_ = that.id_;
+    osm_id_ = that.osm_id_;
+    lat_ = that.lat_;
+    lng_ = that.lng_;
+
+    for (Edge const& edge : that.outgoing_edges_) {
+      Edge new_edge = edge;
+      outgoing_edges_.push_back(new_edge);
+    }
+  }
+
+  NodeID id_;
   NodeID osm_id_;
   double lat_;
   double lng_;

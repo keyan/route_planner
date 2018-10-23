@@ -16,7 +16,7 @@ int main() {
   RoadNetwork road_network = RoadNetwork();
   road_network.load_from_osm_file("data/burlington.osm");
   // road_network.load_from_osm_file("data/saarland.osm");
-  std::cout << "Number of nodes: " << road_network.num_nodes_ << std::endl;
+  std::cout << "Number of nodes: " << road_network.graph_.size() << std::endl;
   std::cout << "Number of edges: " << road_network.num_edges_ << std::endl;
 
   std::cout << "Reducing graph..." << std::endl;
@@ -26,7 +26,7 @@ int main() {
   double lcc_secs = double(end - begin) / CLOCKS_PER_SEC;
   std::cout << "LLC reduction: " << lcc_secs << "sec" << std::endl;
 
-  std::cout << "LCC # of nodes: " << road_network.num_nodes_ << std::endl;
+  std::cout << "LCC # of nodes: " << road_network.graph_.size() << std::endl;
   std::cout << "LCC # of edges: " << road_network.num_edges_ << std::endl;
 
   Dijkstras dijkstra = Dijkstras(road_network);
@@ -37,7 +37,7 @@ int main() {
     Node const& target = road_network.get_rand_node();
 
     std::clock_t begin = std::clock();
-    Weight result = dijkstra.search(origin.osm_id_, target.osm_id_);
+    Weight result = dijkstra.search(origin.id_, target.id_);
     std::clock_t end = std::clock();
     double elapsed_secs = double(end - begin) / CLOCKS_PER_SEC;
     total_query_times += elapsed_secs;

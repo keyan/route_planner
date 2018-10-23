@@ -12,7 +12,7 @@ class RoadNetwork {
 public:
   RoadNetwork();
 
-  void add_node(NodeID osm_id, double lat, double lng);
+  void add_node(NodeID internal_id, NodeID osm_id, double lat, double lng);
   void add_edge(NodeID tail_id, NodeID head_id, Weight weight);
 
   // Add an OSM way to the graph.
@@ -37,11 +37,10 @@ public:
   // Return a random node id from the graph.
   const Node& get_rand_node();
 
-  int num_nodes_;
   int num_edges_;
 
-  std::unordered_map<NodeID, Node> graph_;
-  std::vector<Node*> nodes_;
+  std::vector<Node> graph_;
+  std::unordered_map<NodeID, NodeID> id_to_osm_id_;
 
 private:
   // Given two nodes, return the time in seconds to travel between them.

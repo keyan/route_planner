@@ -17,16 +17,13 @@
 #include "road_network.h"
 #include "road_speeds.h"
 
-RoadNetwork::RoadNetwork() {
-  num_nodes_ = 0;
-  num_edges_ = 0;
-}
+RoadNetwork::RoadNetwork() { num_edges_ = 0; }
 
-void RoadNetwork::add_node(NodeID osm_id, double lat, double lng) {
-  if (graph_.find(osm_id) == graph_.end()) {
-    graph_.emplace(osm_id, Node(osm_id, lat, lng));
-    nodes_.push_back(&graph_.at(osm_id));
-    num_nodes_++;
+void RoadNetwork::add_node(
+    NodeID internal_id, NodeID osm_id, double lat, double lng) {
+  if (id_to_osm_id_.find(osm_id) == id_to_osm_id_.end()) {
+    graph_.emplace_back(Node(internal_id, osm_id, lat, lng));
+    id_to_osm_id_[osm_id] = internal_id;
   }
 }
 
@@ -53,25 +50,32 @@ void RoadNetwork::add_way(NodeIDList node_ids, std::string highway_type) {
   NodeIDList::const_iterator it = node_ids.begin();
   EdgeID tail_id = *it;
   NodeID head_id;
+
+  NodeID internal_tail_id = id_to_osm_id_[tail_id];
+  NodeID internal_head_id;
   for (it = std::next(it); it != node_ids.end(); ++it) {
     head_id = *it;
-    Weight weight = calculate_travel_ms(tail_id, head_id, road_speed_kmh);
-    add_edge(tail_id, head_id, weight);
+    internal_head_id = id_to_osm_id_[head_id];
+
+    Weight weight =
+        calculate_travel_ms(internal_tail_id, internal_head_id, road_speed_kmh);
+    add_edge(internal_tail_id, internal_head_id, weight);
     tail_id = head_id;
+    internal_tail_id = internal_head_id;
   }
 }
 
 const Node& RoadNetwork::get_rand_node() {
-  int idx = std::rand() % nodes_.size() + 1;
-  Node const& rand_node = *nodes_[idx];
+  int idx = std::rand() % graph_.size() + 1;
+  Node const& rand_node = graph_[idx];
 
   return rand_node;
 }
 
 Weight RoadNetwork::calculate_travel_ms(
     EdgeID tail_id, NodeID head_id, float road_speed_kmh) {
-  Node const& tail_node = graph_.at(tail_id);
-  Node const& head_node = graph_.at(head_id);
+  Node const& tail_node = graph_[tail_id];
+  Node const& head_node = graph_[head_id];
   double distance_km =
       haversine(tail_node.lat_, tail_node.lng_, head_node.lat_, head_node.lng_);
   // Rounds to nearest ms
@@ -81,10 +85,10 @@ Weight RoadNetwork::calculate_travel_ms(
 
 std::string RoadNetwork::as_string() {
   std::string output =
-      std::to_string(num_nodes_) + " " + std::to_string(num_edges_);
-  for (Node* node : nodes_) {
-    output += " { " + std::to_string(node->osm_id_) + " (";
-    for (Edge edge : node->outgoing_edges_) {
+      std::to_string(graph_.size()) + " " + std::to_string(num_edges_);
+  for (Node const& node : graph_) {
+    output += " { " + std::to_string(node.id_) + " (";
+    for (Edge const& edge : node.outgoing_edges_) {
       output += std::to_string(edge.head_node_id_) + ", ";
     }
     output += ") }";
@@ -98,22 +102,24 @@ void RoadNetwork::reduce_to_largest_connected_component() {
   // Successive graph search, marking each node with the round that it was
   // visited.
   int64_t round = 0;
-  for (Node* node : nodes_) {
-    if (dijkstra.visited_nodes_[node->osm_id_] == -1) {
-      dijkstra.search(node->osm_id_, -1);
+  for (Node const& node : graph_) {
+    if (dijkstra.visited_nodes_[node.id_] == -1) {
+      dijkstra.search(node.id_, -1);
       dijkstra.set_round(++round);
     }
   }
 
-  // Initialize [0] entry for each round
+  // Initialize empty set entry for each round
   std::vector<NodeIDSet> nodes_by_round;
   for (int64_t i = 0; i < round; ++i) {
-    nodes_by_round.push_back({0});
+    nodes_by_round.push_back({});
   }
 
   // Group node_ids by round
-  for (auto it : dijkstra.visited_nodes_) {
-    nodes_by_round[it.second].insert(it.first);
+  NodeID i = 0;
+  for (auto it = dijkstra.visited_nodes_.begin();
+       it != dijkstra.visited_nodes_.end(); it++, i++) {
+    nodes_by_round[*it].insert(i);
   }
 
   // Fetch the round with the most visited nodes
@@ -125,19 +131,31 @@ void RoadNetwork::reduce_to_largest_connected_component() {
 }
 
 void RoadNetwork::filter_nodes(NodeIDSet include_nodes) {
-  std::vector<Node*>::iterator it = nodes_.begin();
-  // Mutate the nodes_ vector while iterating
-  while (it != nodes_.end()) {
-    if (include_nodes.count((*it)->osm_id_) == 0) {
-      --num_nodes_;
-      num_edges_ -= (*it)->outgoing_edges_.size();
-      graph_.erase((*it)->osm_id_);
-      // erase() already returns iterator to next element
-      it = nodes_.erase(it);
-    } else {
-      ++it;
+  std::unordered_map<NodeID, NodeID> old_id_to_new_id;
+  std::vector<Node> new_graph;
+
+  NodeID remapped_id = 0;
+  for (auto it = graph_.begin(); it != graph_.end(); it++) {
+    if (include_nodes.count((*it).id_) != 0) {
+      Node new_node = *it;
+      new_node.id_ = remapped_id;
+      old_id_to_new_id[(*it).id_] = new_node.id_;
+      id_to_osm_id_[(*it).id_] = new_node.osm_id_;
+      new_graph.push_back(new_node);
+      remapped_id++;
     }
   }
+
+  // Remap edge pointers using new ids
+  num_edges_ = 0;
+  for (Node& node : new_graph) {
+    for (Edge& edge : node.outgoing_edges_) {
+      edge.head_node_id_ = old_id_to_new_id[edge.head_node_id_];
+      num_edges_++;
+    }
+  }
+
+  graph_.swap(new_graph);
 }
 
 void RoadNetwork::load_from_osm_file(const char* file_name) {
@@ -154,6 +172,7 @@ void RoadNetwork::load_from_osm_file(const char* file_name) {
   //   - node
   //   - way
   //   - relation (which we ignore)
+  NodeID curr_node_id = 0;
   for (const tinyxml2::XMLNode* element = osm->FirstChildElement(); element;
        element = element->NextSibling()) {
     const tinyxml2::XMLElement* e = element->ToElement();
@@ -163,8 +182,9 @@ void RoadNetwork::load_from_osm_file(const char* file_name) {
     // do not need and are ignored.
     if (osm_element_type == "node") {
       add_node(
-          e->Int64Attribute("id"), e->DoubleAttribute("lat"),
+          curr_node_id, e->Int64Attribute("id"), e->DoubleAttribute("lat"),
           e->DoubleAttribute("lon"));
+      curr_node_id++;
       // Way have both a nested list of 2+ nodes, and at least one "tag" child
       // that we do care about.
     } else if (osm_element_type == "way") {
