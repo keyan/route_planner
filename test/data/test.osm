@@ -3,6 +3,8 @@
   <!---
    Construct a shared graph for testing:
 
+   0
+
    1 -> 2
    |
    - -> 3 -> 4
@@ -12,6 +14,7 @@
 
    7 -> 8
   -->
+ <node id="0" visible="true" version="5" changeset="18790659" timestamp="2013-11-08T22:02:21Z" user="dolphinling" uid="54247" lat="44.4647003" lon="-73.2076992"/>
  <node id="1" visible="true" version="5" changeset="18790659" timestamp="2013-11-08T22:02:21Z" user="dolphinling" uid="54247" lat="44.4647003" lon="-73.2076992"/>
  <node id="2" visible="true" version="3" changeset="3269767" timestamp="2009-12-02T07:31:35Z" user="woodpeck_fixbot" uid="147510" lat="44.4693030" lon="-73.2051530"/>
  <node id="3" visible="true" version="2" changeset="3269767" timestamp="2009-12-02T07:31:35Z" user="woodpeck_fixbot" uid="147510" lat="44.4691910" lon="-73.2050130"/>

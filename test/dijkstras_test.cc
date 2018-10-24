@@ -6,6 +6,7 @@
 #include "../src/dijkstras.h"
 #include "../src/graph_types.h"
 #include "../src/road_network.h"
+#include "util/constants.h"
 
 using MinHeapPriorityQueue = std::priority_queue<
     WeightedNode,
@@ -13,6 +14,8 @@ using MinHeapPriorityQueue = std::priority_queue<
     std::greater<std::vector<WeightedNode>::value_type>>;
 
 // Construct a shared graph for testing:
+//
+// 0
 //
 // 1 -> 2
 // |
@@ -24,14 +27,15 @@ using MinHeapPriorityQueue = std::priority_queue<
 RoadNetwork default_road_network() {
   RoadNetwork road_network = RoadNetwork();
 
-  road_network.add_node(1, 0.0, 0.0);
-  road_network.add_node(2, 0.0, 0.0);
-  road_network.add_node(3, 0.0, 0.0);
-  road_network.add_node(4, 0.0, 0.0);
-  road_network.add_node(5, 0.0, 0.0);
-  road_network.add_node(6, 0.0, 0.0);
-  road_network.add_node(7, 0.0, 0.0);
-  road_network.add_node(8, 0.0, 0.0);
+  road_network.add_node(0, 0, UNUSED_LAT_LNG, UNUSED_LAT_LNG);
+  road_network.add_node(1, 1, UNUSED_LAT_LNG, UNUSED_LAT_LNG);
+  road_network.add_node(2, 2, UNUSED_LAT_LNG, UNUSED_LAT_LNG);
+  road_network.add_node(3, 3, UNUSED_LAT_LNG, UNUSED_LAT_LNG);
+  road_network.add_node(4, 4, UNUSED_LAT_LNG, UNUSED_LAT_LNG);
+  road_network.add_node(5, 5, UNUSED_LAT_LNG, UNUSED_LAT_LNG);
+  road_network.add_node(6, 6, UNUSED_LAT_LNG, UNUSED_LAT_LNG);
+  road_network.add_node(7, 7, UNUSED_LAT_LNG, UNUSED_LAT_LNG);
+  road_network.add_node(8, 8, UNUSED_LAT_LNG, UNUSED_LAT_LNG);
 
   road_network.add_edge(1, 2, 1);
   road_network.add_edge(1, 3, 1);
@@ -48,8 +52,8 @@ TEST_CASE("Verify default road_network", "[Dijkstra]") {
   RoadNetwork road_network = default_road_network();
   REQUIRE(
       road_network.as_string() ==
-      "8 14 { 1 (2, 3, 5, ) } { 2 (1, ) } { 3 (1, 4, 5, 6, ) } { 4 (3, ) } { 5 "
-      "(1, 3, ) } { 6 (3, ) } { 7 (8, ) } { 8 (7, ) }");
+      "9 14 { 0 () } { 1 (2, 3, 5, ) } { 2 (1, ) } { 3 (1, 4, 5, 6, ) } { 4 (3,"
+      " ) } { 5 (1, 3, ) } { 6 (3, ) } { 7 (8, ) } { 8 (7, ) }");
 }
 
 TEST_CASE("Min-heap priority queue", "[DS]") {
@@ -70,17 +74,23 @@ TEST_CASE("Search w -1 target marks visited_nodes_", "[Dijkstra]") {
   RoadNetwork road_network = default_road_network();
 
   Dijkstras dijkstra = Dijkstras(road_network);
-  dijkstra.search(1, -1);
+  dijkstra.search(0, -1);
   dijkstra.set_round(1);
+  dijkstra.search(1, -1);
+  dijkstra.set_round(2);
   dijkstra.search(7, -1);
 
-  for (auto it : dijkstra.visited_nodes_) {
-    // Nodes 7 + 8 are disconnected, should be marked as second round
-    if (it.first == 7 or it.first == 8) {
-      REQUIRE(it.second == 1);
+  NodeID i = 0;
+  for (auto it = dijkstra.visited_nodes_.begin();
+       it != dijkstra.visited_nodes_.end(); it++, i++) {
+    // Nodes 7 + 8 are disconnected, should be marked as round 2
+    if (i == 7 or i == 8) {
+      REQUIRE(*it == 2);
+    } else if (i == 0) {
+      REQUIRE(*it == 0);
       // All other nodes are part of the LCC
     } else {
-      REQUIRE(it.second == 0);
+      REQUIRE(*it == 1);
     }
   }
 }
