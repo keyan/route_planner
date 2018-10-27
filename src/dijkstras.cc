@@ -1,33 +1,27 @@
-#include <csignal>
-#include <cstdint>
 #include <functional>
-#include <iostream>
 #include <queue>
-#include <string>
-#include <unordered_map>
+#include <utility>
 
 #include "dijkstras.h"
-#include "graph_types.h"
 #include "road_network.h"
 
-using DistanceMap = std::unordered_map<NodeID, Weight>;
 using NodeMap = std::unordered_map<NodeID, NodeID>;
 using MinHeapPriorityQueue = std::priority_queue<
     WeightedNode,
     std::vector<WeightedNode>,
     std::greater<std::vector<WeightedNode>::value_type>>;
 
-Weight
-Dijkstras::search(NodeID const& source_node_id, NodeID const& target_node_id) {
+Weight Dijkstras::search(
+    NodeID const& source_node_id,
+    NodeID const& target_node_id,
+    DistanceMap& distances) {
   NodeMap parents = {{source_node_id, -1}};
   NodeMap shortest_path_tree;
-
-  // Store mapping of minimal distance to each visited node.
-  DistanceMap distances = {{source_node_id, 0}};
+  distances[source_node_id] = 0;
 
   MinHeapPriorityQueue node_queue;
-
-  node_queue.emplace(WeightedNode(source_node_id, 0));
+  node_queue.emplace(
+      WeightedNode(source_node_id, 0 + get_heuristic_weight(source_node_id)));
 
   while (!node_queue.empty()) {
     WeightedNode curr_w_node = node_queue.top();
@@ -66,7 +60,8 @@ Dijkstras::search(NodeID const& source_node_id, NodeID const& target_node_id) {
           distances[adj_node_id] = new_weight;
           parents[adj_node_id] = curr_node_id;
 
-          node_queue.emplace(WeightedNode(adj_node_id, new_weight));
+          node_queue.emplace(WeightedNode(
+              adj_node_id, new_weight + get_heuristic_weight(source_node_id)));
         }
       }
     }
@@ -82,3 +77,15 @@ Dijkstras::search(NodeID const& source_node_id, NodeID const& target_node_id) {
 }
 
 void Dijkstras::set_round(int64_t mark) { round_ = mark; }
+
+void Dijkstras::set_heuristic(std::vector<Weight>* heuristic) {
+  heuristic_ = heuristic;
+};
+
+Weight Dijkstras::get_heuristic_weight(NodeID const& node_id) {
+  if (!heuristic_ or heuristic_->empty()) {
+    return 0;
+  } else {
+    return heuristic_->at(node_id);
+  }
+}

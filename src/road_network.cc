@@ -104,7 +104,8 @@ void RoadNetwork::reduce_to_largest_connected_component() {
   int64_t round = 0;
   for (Node const& node : graph_) {
     if (dijkstra.visited_nodes_[node.id_] == -1) {
-      dijkstra.search(node.id_, -1);
+      DistanceMap distances;
+      dijkstra.search(node.id_, -1, distances);
       dijkstra.set_round(++round);
     }
   }

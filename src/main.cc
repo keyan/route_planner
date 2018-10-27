@@ -37,7 +37,8 @@ int main() {
     Node const& target = road_network.get_rand_node();
 
     std::clock_t begin = std::clock();
-    Weight result = dijkstra.search(origin.id_, target.id_);
+    DistanceMap distances;
+    Weight result = dijkstra.search(origin.id_, target.id_, distances);
     std::clock_t end = std::clock();
     double elapsed_secs = double(end - begin) / CLOCKS_PER_SEC;
     total_query_times += elapsed_secs;

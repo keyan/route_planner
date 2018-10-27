@@ -5,12 +5,15 @@
 #include <unordered_set>
 #include <vector>
 
-using NodeID = int64_t;
-using EdgeID = int64_t;
+using NodeID = int32_t;
+using OSMNodeID = int64_t;
+using EdgeID = int32_t;
 using Weight = int64_t;
 
 using NodeIDList = std::vector<NodeID>;
 using NodeIDSet = std::unordered_set<NodeID>;
+
+using DistanceMap = std::unordered_map<NodeID, Weight>;
 
 constexpr Weight INF_WEIGHT = std::numeric_limits<Weight>::max();
 
@@ -34,7 +37,7 @@ struct Edge {
 
 // Represents a single vertex in the graph, maps directly to an OSM node.
 struct Node {
-  Node(NodeID id, NodeID osm_id, double lat, double lng)
+  Node(NodeID id, OSMNodeID osm_id, double lat, double lng)
       : id_(id)
       , osm_id_(osm_id)
       , lat_(lat)
@@ -53,7 +56,7 @@ struct Node {
   }
 
   NodeID id_;
-  NodeID osm_id_;
+  OSMNodeID osm_id_;
   double lat_;
   double lng_;
   std::vector<Edge> outgoing_edges_;

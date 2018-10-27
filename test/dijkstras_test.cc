@@ -74,11 +74,14 @@ TEST_CASE("Search w -1 target marks visited_nodes_", "[Dijkstra]") {
   RoadNetwork road_network = default_road_network();
 
   Dijkstras dijkstra = Dijkstras(road_network);
-  dijkstra.search(0, -1);
+  DistanceMap distances;
+  dijkstra.search(0, -1, distances);
+  distances.clear();
   dijkstra.set_round(1);
-  dijkstra.search(1, -1);
+  dijkstra.search(1, -1, distances);
+  distances.clear();
   dijkstra.set_round(2);
-  dijkstra.search(7, -1);
+  dijkstra.search(7, -1, distances);
 
   NodeID i = 0;
   for (auto it = dijkstra.visited_nodes_.begin();
@@ -101,10 +104,13 @@ TEST_CASE("Search finds path", "[Dijkstra]") {
   Dijkstras dijkstra = Dijkstras(road_network);
   Weight result;
 
-  result = dijkstra.search(1, 5);
+  DistanceMap distances;
+  result = dijkstra.search(1, 5, distances);
+  distances.clear();
   REQUIRE(result == 2);
 
-  result = dijkstra.search(3, 5);
+  result = dijkstra.search(3, 5, distances);
+  distances.clear();
   REQUIRE(result == 1);
 }
 
@@ -114,6 +120,7 @@ TEST_CASE("Disconnected nodes return INF_WEIGHT", "[Dijkstra]") {
   Dijkstras dijkstra = Dijkstras(road_network);
   Weight result;
 
-  result = dijkstra.search(1, 8);
+  DistanceMap distances;
+  result = dijkstra.search(1, 8, distances);
   REQUIRE(result == INF_WEIGHT);
 }
