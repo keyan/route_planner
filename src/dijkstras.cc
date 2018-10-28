@@ -20,8 +20,7 @@ Weight Dijkstras::search(
   distances[source_node_id] = 0;
 
   MinHeapPriorityQueue node_queue;
-  node_queue.emplace(
-      WeightedNode(source_node_id, 0 + get_heuristic_weight(source_node_id)));
+  node_queue.emplace(WeightedNode(source_node_id, 0));
 
   while (!node_queue.empty()) {
     WeightedNode curr_w_node = node_queue.top();
@@ -61,7 +60,7 @@ Weight Dijkstras::search(
           parents[adj_node_id] = curr_node_id;
 
           node_queue.emplace(WeightedNode(
-              adj_node_id, new_weight + get_heuristic_weight(source_node_id)));
+              adj_node_id, new_weight + get_heuristic_weight(adj_node_id)));
         }
       }
     }
@@ -72,6 +71,7 @@ Weight Dijkstras::search(
   } else if (distances.count(target_node_id) == 0) {
     return INF_WEIGHT;
   } else {
+    std::cout << "Settled nodes: " << shortest_path_tree.size() << std::endl;
     return distances[target_node_id];
   }
 }

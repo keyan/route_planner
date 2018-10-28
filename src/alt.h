@@ -23,11 +23,21 @@ class ALT {
 public:
   ALT(RoadNetwork& road_network, Dijkstras& dijkstras)
       : road_network_(road_network)
-      , dijkstras_(dijkstras) {}
+      , dijkstras_(dijkstras) {
+    select_landmarks();
+    precompute_landmark_map();
+  }
 
   // Compute shortest path using A* with the landmark heuristic.
   Weight search(NodeID const& source_node_id, NodeID const& target_node_id);
 
+  std::vector<NodeID> landmarks_;
+
+  // Precomputation for distances to every node in the network from all
+  // landmarks, index of each entry is the pointer to the NodeID in landmarks_.
+  std::vector<std::vector<Weight>> landmark_distances_;
+
+private:
   // Select a constant number of nodes for landmark computation.
   //
   // There are empirically better performing methods for selection than random
@@ -37,13 +47,6 @@ public:
   // Precompute landmark_distances_.
   void precompute_landmark_map();
 
-  std::vector<NodeID> landmarks_;
-
-  // Precomputation for distances to every node in the network from all
-  // landmarks, index of each entry is the pointer to the NodeID in landmarks_.
-  std::vector<std::vector<Weight>> landmark_distances_;
-
-private:
   RoadNetwork& road_network_;
   Dijkstras& dijkstras_;
 };

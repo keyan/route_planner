@@ -111,10 +111,7 @@ void RoadNetwork::reduce_to_largest_connected_component() {
   }
 
   // Initialize empty set entry for each round
-  std::vector<NodeIDSet> nodes_by_round;
-  for (int64_t i = 0; i < round; ++i) {
-    nodes_by_round.push_back({});
-  }
+  std::vector<NodeIDSet> nodes_by_round(round);
 
   // Group node_ids by round
   NodeID i = 0;
