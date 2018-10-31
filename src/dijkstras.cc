@@ -2,7 +2,9 @@
 #include <queue>
 #include <utility>
 
+#include "binary_min_heap.h"
 #include "dijkstras.h"
+#include "graph_types.h"
 #include "road_network.h"
 
 using NodeMap = std::unordered_map<NodeID, NodeID>;
@@ -19,14 +21,16 @@ Weight Dijkstras::search(
   NodeMap shortest_path_tree;
   distances[source_node_id] = 0;
 
-  MinHeapPriorityQueue node_queue;
-  node_queue.emplace(WeightedNode(source_node_id, 0));
+  const int NULL_DATA = 0;
+  BinaryMinHeap<
+      NodeID, NodeID, Weight, int, UnorderedMapStorage<NodeID, Weight>>
+      node_queue(graph_.graph_.size());
+  node_queue.Insert(source_node_id, 0, NULL_DATA);
 
-  while (!node_queue.empty()) {
-    WeightedNode curr_w_node = node_queue.top();
-    node_queue.pop();
+  while (!node_queue.Empty()) {
+    NodeID curr_node_id = node_queue.Min();
+    node_queue.DeleteMin();
 
-    NodeID const& curr_node_id = curr_w_node.node_id_;
     Node const& curr_node = graph_.graph_[curr_node_id];
 
     // std::priority_queue has no decrease-weight operation, instead do a "lazy
@@ -59,8 +63,12 @@ Weight Dijkstras::search(
           distances[adj_node_id] = new_weight;
           parents[adj_node_id] = curr_node_id;
 
-          node_queue.emplace(WeightedNode(
-              adj_node_id, new_weight + get_heuristic_weight(adj_node_id)));
+          new_weight += get_heuristic_weight(adj_node_id);
+          if (!node_queue.WasInserted(adj_node_id)) {
+            node_queue.Insert(adj_node_id, new_weight, NULL_DATA);
+          } else {
+            node_queue.DecreaseKey(adj_node_id, new_weight);
+          }
         }
       }
     }
