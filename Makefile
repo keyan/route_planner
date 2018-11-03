@@ -1,9 +1,14 @@
 UNAME := $(shell uname)
 
+BOOST_VERSION = 1.67.0
+underscore_BOOST_VERSION = boost_$(subst .,_,$(BOOST_VERSION))
+
+PWD = $(shell pwd)
 SRC_DIR = src
 LIB_DIR = lib
 TEST_DIR = test
 INCLUDE_DIR = include
+USR_LIB = /usr/local/lib/
 
 MAIN_BINARIES = $(wildcard $(SRC_DIR)/*.cc)
 SOURCE_BINARIES = $(filter-out $(SRC_DIR)/main.cc, $(MAIN_BINARIES))
@@ -11,10 +16,13 @@ TEST_BINARIES = $(wildcard $(TEST_DIR)/*.cc)
 
 ## 3rd party libraries
 TINYXML2_BINARIES = $(wildcard $(LIB_DIR)/tinyxml2/*.cpp)
+BOOST_DOWNLOAD_URL = https://dl.bintray.com/boostorg/release/$(BOOST_VERSION)/source/$(underscore_BOOST_VERSION).tar.gz
+BOOST_DIR = $(USR_LIB)$(underscore_BOOST_VERSION)
 # Includes
 CATCH = -I ./$(LIB_DIR)/catch/
 TINYXML2 = -I ./$(LIB_DIR)/tinyxml2/
-LIBS = $(CATCH) $(TINYXML2)
+BOOST = -I $(BOOST_DIR) -DBOOST_ERROR_CODE_HEADER_ONLY
+LIBS = $(CATCH) $(TINYXML2) $(BOOST)
 
 ## Compilation flags
 # -g -> generate debug info
@@ -29,6 +37,13 @@ CLANG_FORMAT_BIN = clang-format
 endif
 
 all: format build run
+
+# Download and extract boost libraries
+install:
+	cd $(USR_LIB)
+	wget $(BOOST_DOWNLOAD_URL)
+	tar -xzf $(underscore_BOOST_VERSION).tar.gz
+	cd $(PWD)
 
 format:
 	$(CLANG_FORMAT_BIN) -i $(SRC_DIR)/*.cc
