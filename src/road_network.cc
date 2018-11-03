@@ -1,19 +1,15 @@
 #include <algorithm>
-#include <cstdint>
 #include <cstdlib>
 #include <fstream>
 #include <iostream>
 #include <regex>
-#include <string>
 #include <unordered_set>
-#include <vector>
 
 #include "tinyxml2.h"
 
 #include "constants.h"
 #include "dijkstras.h"
 #include "distance.h"
-#include "graph_types.h"
 #include "road_network.h"
 #include "road_speeds.h"
 
