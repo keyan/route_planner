@@ -1,7 +1,7 @@
 #include "catch.hpp"
 #include <cstdlib>
 
-#include "../src/distance.h"
+#include "../include/distance.h"
 
 // Can't really compare double/float vals, so use arbitrary small val.
 static const double EPSILON = 0.00001;

@@ -3,9 +3,9 @@
 
 #include "catch.hpp"
 
-#include "../src/dijkstras.h"
-#include "../src/graph_types.h"
-#include "../src/road_network.h"
+#include "../include/dijkstras.h"
+#include "../include/graph_types.h"
+#include "../include/road_network.h"
 #include "util/constants.h"
 
 using MinHeapPriorityQueue = std::priority_queue<

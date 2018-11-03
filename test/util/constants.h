@@ -1,7 +1,7 @@
 #ifndef TEST_CONSTANTS_H_
 #define TEST_CONSTANTS_H_
 
-#include "../src/distance.h"
+#include "../include/distance.h"
 
 // Can't really compare double/float vals, so use arbitrary small val
 double const  EPSILON = 0.00001;

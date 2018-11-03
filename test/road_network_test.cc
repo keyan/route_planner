@@ -1,7 +1,7 @@
 #include "catch.hpp"
 #include <cstdlib>
 
-#include "../src/road_network.h"
+#include "../include/road_network.h"
 #include "util/constants.h"
 
 TEST_CASE("Empty graph representation", "[]") {
