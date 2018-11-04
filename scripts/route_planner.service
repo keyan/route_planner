@@ -6,7 +6,7 @@ After=network.target
 Type=simple
 # Another Type option: forking
 User=ubuntu
-WorkingDirectory=/home/ubuntu
+WorkingDirectory=/home/ubuntu/route_planner
 ExecStart=/home/ubuntu/route_planner/main.out 4001
 Restart=on-failure
 # Other Restart options: or always, on-abort, etc

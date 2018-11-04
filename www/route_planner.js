@@ -3,6 +3,12 @@ var source;
 var target;
 var line;
 
+// Hit localhost only when not being served via remote host
+var baseUrl = "localhost:4001/";
+if (document.location.host) {
+    baseUrl = "http://demo.keyanp.com/route?";
+}
+
 $(document).ready(function(){
     // Create the map centered in Seattle, restrict bounds to area used
     // for graph construction.
@@ -28,7 +34,7 @@ $(document).ready(function(){
 });
 
 function routeAndRedraw() {
-    var url = "http://127.0.0.1:4001/" +
+    var url = baseUrl +
         source.getLatLng().lat + "," + source.getLatLng().lng + "," +
         target.getLatLng().lat + "," + target.getLatLng().lng;
     $.ajax(url, { dataType: "jsonp" });
