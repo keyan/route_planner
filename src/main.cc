@@ -15,7 +15,9 @@ int main(int argc, char** argv) {
     cout << "Running in server mode..." << endl;
     int port = atoi(argv[1]);
     const char* osm_file = "data/seattle.clean.osm";
-    if (argc == 3) { osm_file = argv[2]; }
+    if (argc == 3) {
+      osm_file = argv[2];
+    }
 
     run_server(port, osm_file);
   } else {

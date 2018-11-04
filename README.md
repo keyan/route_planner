@@ -24,7 +24,7 @@ A live demo using vector tiles provided by [MapBox](https://www.mapbox.com/) and
 
 You can make direct requests to the demo routing server as well:
 ```
-$ curl http://demo.keyanp.com/route?44.478080,-73.199450,44.487469,-73.220668
+$ curl http://demo.keyanp.com/route?47.619872,-122.347477,47.598289,-122.334700
 ```
 
 ### Build from source
