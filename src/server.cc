@@ -30,6 +30,23 @@ std::string parse_querystring(tcp::socket& socket) {
   return request;
 }
 
+std::pair<LatLng, LatLng> parse_geo_params(std::string& querystring) {
+    // Naive request parsing, ignore initial chars until lat/lng.
+    size_t pos = querystring.find_first_of("123456789");
+    // atof() ignores non-numerical chars so atof("11.11,22.22") -> 11.11
+    float source_lat = atof(querystring.substr(pos).c_str());
+    pos = querystring.find(',', pos + 1);
+    float source_lng = atof(querystring.substr(pos + 1).c_str());
+    pos = querystring.find(',', pos + 1);
+    float target_lat = atof(querystring.substr(pos + 1).c_str());
+    pos = querystring.find(',', pos + 1);
+    float target_lng = atof(querystring.substr(pos + 1).c_str());
+
+    return std::make_pair(
+        LatLng(source_lat, source_lng),
+        LatLng(target_lat, target_lng));
+}
+
 void send_response(tcp::socket& socket, Weight& weight, std::string& polyline) {
   std::stringstream jsonp;
   jsonp << "routingEngineCallback({\n"
@@ -75,21 +92,12 @@ void run_server(int port, const char* osm_file) {
       cout << "received request -- " << daytime << flush;
 
       std::string querystring = parse_querystring(socket);
-
-      // Naive request parsing, ignore initial 5 chars "GET /".
-      size_t pos = 4;
-      float source_lat = atof(querystring.substr(pos + 1).c_str());
-      pos = querystring.find(',', pos + 1);
-      float source_lng = atof(querystring.substr(pos + 1).c_str());
-      pos = querystring.find(',', pos + 1);
-      float target_lat = atof(querystring.substr(pos + 1).c_str());
-      pos = querystring.find(',', pos + 1);
-      float target_lng = atof(querystring.substr(pos + 1).c_str());
+      std::pair<LatLng, LatLng> pos = parse_geo_params(querystring);
 
       NodeID source =
-          geo_position_to_node(road_network, LatLng(source_lat, source_lng));
+          geo_position_to_node(road_network, pos.first);
       NodeID target =
-          geo_position_to_node(road_network, LatLng(target_lat, target_lng));
+          geo_position_to_node(road_network, pos.second);
 
       if (source == -1 or target == -1) {
         cout << "Map matching requested markers failed" << endl;
