@@ -10,7 +10,7 @@
 using NodeID = int32_t;
 using OSMNodeID = int64_t;
 using EdgeID = int32_t;
-using Weight = int64_t;
+using Weight = int32_t;
 
 using NodeIDList = std::vector<NodeID>;
 using NodeIDSet = std::unordered_set<NodeID>;
