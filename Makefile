@@ -21,7 +21,7 @@ BOOST_DIR = $(USR_LIB)$(underscore_BOOST_VERSION)
 # Includes
 CATCH = -I ./$(LIB_DIR)/catch/
 TINYXML2 = -I ./$(LIB_DIR)/tinyxml2/
-BOOST = -I $(BOOST_DIR) -DBOOST_ERROR_CODE_HEADER_ONLY
+BOOST = -I $(BOOST_DIR) -DBOOST_ERROR_CODE_HEADER_ONLY -lpthread
 LIBS = $(CATCH) $(TINYXML2) $(BOOST)
 
 ## Compilation flags
