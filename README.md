@@ -4,12 +4,23 @@ A road network routing engine modeled after [OSRM](https://github.com/Project-OS
 
 Purely an academic exercise, not intended for production usage.
 
+## Overview
+
+A road network router using [OpenStreetMap](https://www.openstreetmap.org/) data. Currently the demo server uses A\* routing with landmark heuristics.
+
+![Screenshot of web frontend](https://user-images.githubusercontent.com/6401746/47963067-59aad580-dfdb-11e8-9671-66e68811afb9.png)
+
+Future improvements:
+
+1. Replace A\* usage with contraction hierarchies
+1. Improved webserver and error handling for clients, currently not clear when attempting to route outside of the configured network
+1. Investigate techniques for handling larger regions, currently OSM XML parsing and connected component computations are very slow for large graphs
+
 ## Usage
 
 ### Demo
 
-A live demo using vector tiles provided by [MapBox](https://www.mapbox.com/) and configured with a small graph containing a region within Burlington VT is available at:
-<demo.keyanp.com/route_planner>
+A live demo using vector tiles provided by [MapBox](https://www.mapbox.com/) and configured with a small graph containing a region within Seattle WA is available at: http://demo.keyanp.com/route_planner
 
 You can make direct requests to the demo routing server as well:
 ```
