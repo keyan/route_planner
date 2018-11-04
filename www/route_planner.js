@@ -18,7 +18,7 @@ $(document).ready(function(){
     accessToken: 'pk.eyJ1Ijoia3Bpc2hkYWRpYW4iLCJhIjoiY2pvMTVzN2lwMDdrbTNrcG9mb2RvcDF5aSJ9.wbFcMArvH5wSmVwvRomNmg'
 }).addTo(map);
 
-    source = L.marker([47.620959, -122.350666], {draggable: true}).addTo(map);
+    source = L.marker([47.619872, -122.347477], {draggable: true}).addTo(map);
     target = L.marker([47.598289, -122.334700], {draggable: true}).addTo(map);
     line = L.polyline([], {color: 'red'}).addTo(map);
     routeAndRedraw();
