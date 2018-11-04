@@ -5,6 +5,8 @@
 
 #include "constants.h"
 
+constexpr float INF_DISTANCE = std::numeric_limits<float>::max();
+
 inline double degree_to_radian(double angle) { return angle * M_PI / 180.0; }
 
 // Return the great-circle distance between two points in KM.

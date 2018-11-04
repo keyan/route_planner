@@ -3,9 +3,7 @@
 #include <utility>
 
 #include "dijkstras.h"
-#include "road_network.h"
 
-using NodeMap = std::unordered_map<NodeID, NodeID>;
 using MinHeapPriorityQueue = std::priority_queue<
     WeightedNode,
     std::vector<WeightedNode>,
@@ -15,8 +13,8 @@ Weight Dijkstras::search(
     NodeID const& source_node_id,
     NodeID const& target_node_id,
     DistanceMap& distances) {
+  shortest_path_tree_.clear();
   NodeMap parents = {{source_node_id, -1}};
-  NodeMap shortest_path_tree;
   distances[source_node_id] = 0;
 
   MinHeapPriorityQueue node_queue;
@@ -32,12 +30,12 @@ Weight Dijkstras::search(
     // std::priority_queue has no decrease-weight operation, instead do a "lazy
     // deletion" by keeping the old node in the pq and just ignoring it when it
     // is eventually popped.
-    if (shortest_path_tree.count(curr_node_id) == 1) {
+    if (shortest_path_tree_.count(curr_node_id) == 1) {
       continue;
     }
 
     // Add removed node to shortest path tree.
-    shortest_path_tree[curr_node_id] = parents[curr_node_id];
+    shortest_path_tree_[curr_node_id] = parents[curr_node_id];
 
     if (curr_node_id == target_node_id) {
       break;
@@ -49,7 +47,7 @@ Weight Dijkstras::search(
     for (Edge const& adj_edge : curr_node.outgoing_edges_) {
       NodeID const& adj_node_id = adj_edge.head_node_id_;
 
-      if (shortest_path_tree.count(adj_node_id) == 0) {
+      if (shortest_path_tree_.count(adj_node_id) == 0) {
         Weight const& curr_weight =
             distances.insert(std::make_pair(adj_node_id, INF_WEIGHT))
                 .first->second;
@@ -66,12 +64,9 @@ Weight Dijkstras::search(
     }
   }
 
-  if (target_node_id == -1) {
-    return 0;
-  } else if (distances.count(target_node_id) == 0) {
+  if (distances.count(target_node_id) == 0 or target_node_id == -1) {
     return INF_WEIGHT;
   } else {
-    std::cout << "Settled nodes: " << shortest_path_tree.size() << std::endl;
     return distances[target_node_id];
   }
 }

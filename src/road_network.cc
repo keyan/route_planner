@@ -10,6 +10,7 @@
 #include "constants.h"
 #include "dijkstras.h"
 #include "distance.h"
+#include "polyline.h"
 #include "road_network.h"
 #include "road_speeds.h"
 
@@ -90,6 +91,24 @@ std::string RoadNetwork::as_string() {
     output += ") }";
   }
   return output;
+}
+
+std::string RoadNetwork::build_polyline_from_search(
+    NodeID& source, NodeID& target, NodeMap& shortest_path_tree) {
+  std::vector<std::pair<float, float>> points;
+  NodeID& curr_id = target;
+
+  while (curr_id != -1) {
+    Node& curr_node = graph_.at(curr_id);
+    points.emplace_back(curr_node.lat_, curr_node.lng_);
+    curr_id = shortest_path_tree.at(curr_id);
+  }
+
+  // Points are from target, to source, reverse the order in case of
+  // requirement for directionality.
+  std::reverse(points.begin(), points.end());
+
+  return encode(points);
 }
 
 void RoadNetwork::reduce_to_largest_connected_component() {

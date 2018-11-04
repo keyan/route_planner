@@ -39,6 +39,9 @@ public:
   // for computing the connected components.
   std::vector<int64_t> visited_nodes_;
 
+  // Initially empty, but stores the SPT for the previous search run.
+  NodeMap shortest_path_tree_;
+
 private:
   Weight get_heuristic_weight(NodeID const& node_id);
 

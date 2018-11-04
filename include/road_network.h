@@ -37,6 +37,12 @@ public:
   // Return a random node id from the graph.
   const Node& get_rand_node();
 
+  // Using the SPT constructed by a routing execution, traverse the SPT and
+  // get a vector of all lat/lngs along the route. Return a polyline of these
+  // locations.
+  std::string build_polyline_from_search(
+      NodeID& source, NodeID& target, NodeMap& shortest_path_tree);
+
   int num_edges_;
 
   std::vector<Node> graph_;

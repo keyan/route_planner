@@ -1,7 +1,9 @@
 #ifndef GRAPH_TYPES_H_
 #define GRAPH_TYPES_H_
+
 #include <cstdint>
 #include <limits>
+#include <unordered_map>
 #include <unordered_set>
 #include <vector>
 
@@ -14,8 +16,18 @@ using NodeIDList = std::vector<NodeID>;
 using NodeIDSet = std::unordered_set<NodeID>;
 
 using DistanceMap = std::unordered_map<NodeID, Weight>;
+using NodeMap = std::unordered_map<NodeID, NodeID>;
 
 constexpr Weight INF_WEIGHT = std::numeric_limits<Weight>::max();
+
+struct LatLng {
+  LatLng(float lat, float lng)
+      : lat_(lat)
+      , lng_(lng) {}
+
+  float lat_;
+  float lng_;
+};
 
 // Represents a directed edge between two nodes.
 //
