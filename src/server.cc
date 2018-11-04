@@ -7,6 +7,7 @@
 #include "alt.h"
 #include "road_network.h"
 #include "server.h"
+#include "string_util.h"
 #include "utils.h"
 
 using boost::asio::ip::tcp;
@@ -29,13 +30,11 @@ std::string parse_querystring(tcp::socket& socket) {
   return request;
 }
 
-void send_response(tcp::socket& socket, Weight& result) {
+void send_response(tcp::socket& socket, Weight& weight, std::string& polyline) {
   std::stringstream jsonp;
   jsonp << "routingEngineCallback({\n"
-        << "  polyline: \"" << "_cnnGpww}Luy@rcC" << "\",\n"
-        << "  travel_time: \"" << ms_to_mins_and_secs(result) << "\"\n"
-        // << [" << sourceLat << "," << sourceLng << "," << targetLat
-        // << "," << targetLng << "]\n"
+        << "  polyline: \"" << escape_json(polyline) << "\",\n"
+        << "  travel_time: \"" << ms_to_mins_and_secs(weight) << "\"\n"
         << "})\n";
   std::ostringstream answer;
   answer << "HTTP/1.1 200 OK\r\n"
@@ -51,13 +50,13 @@ void send_response(tcp::socket& socket, Weight& result) {
       write_error);
 }
 
-void run_server(int port) {
+void run_server(int port, const char* osm_file) {
   // Initialize routing engine
-  // RoadNetwork road_network = RoadNetwork();
-  // road_network.load_from_osm_file("data/burlington.osm");
-  // road_network.reduce_to_largest_connected_component();
-  // Dijkstras dijkstra = Dijkstras(road_network);
-  // ALT engine = ALT(road_network, dijkstra);
+  RoadNetwork road_network = RoadNetwork();
+  road_network.load_from_osm_file(osm_file);
+  road_network.reduce_to_largest_connected_component();
+  Dijkstras dijkstra = Dijkstras(road_network);
+  ALT engine = ALT(road_network, dijkstra);
 
   try {
     // Create socket and begin listening on port for requests.
@@ -78,7 +77,7 @@ void run_server(int port) {
       std::string querystring = parse_querystring(socket);
 
       // Naive request parsing, ignore initial 5 chars "GET /".
-      size_t pos = 5;
+      size_t pos = 4;
       float source_lat = atof(querystring.substr(pos + 1).c_str());
       pos = querystring.find(',', pos + 1);
       float source_lng = atof(querystring.substr(pos + 1).c_str());
@@ -87,10 +86,23 @@ void run_server(int port) {
       pos = querystring.find(',', pos + 1);
       float target_lng = atof(querystring.substr(pos + 1).c_str());
 
-      // Weight result = engine.search(origin.id_, target.id_);
-      Weight result = 1012340;
+      NodeID source =
+          geo_position_to_node(road_network, LatLng(source_lat, source_lng));
+      NodeID target =
+          geo_position_to_node(road_network, LatLng(target_lat, target_lng));
 
-      send_response(socket, result);
+      if (source == -1 or target == -1) {
+        cout << "Map matching requested markers failed" << endl;
+      } else {
+        Weight weight = engine.search(source, target);
+        if (weight != INF_WEIGHT) {
+          std::string polyline = road_network.build_polyline_from_search(
+              source, target, dijkstra.shortest_path_tree_);
+          send_response(socket, weight, polyline);
+        } else {
+          cout << "Invalid routing result" << endl;
+        }
+      }
     }
   } catch (std::exception& e) {
     cerr << e.what() << endl;

@@ -38,6 +38,9 @@ endif
 
 all: format build run
 
+server: build
+	./main.out 4001
+
 # Download and extract boost libraries
 install:
 	cd $(USR_LIB)
