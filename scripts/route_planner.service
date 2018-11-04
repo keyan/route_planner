@@ -1,0 +1,15 @@
+[Unit]
+Description=route_planner backend
+After=network.target
+
+[Service]
+Type=simple
+# Another Type option: forking
+User=ubuntu
+WorkingDirectory=/home/ubuntu
+ExecStart=/home/ubuntu/route_planner/main.out 4001
+Restart=on-failure
+# Other Restart options: or always, on-abort, etc
+
+[Install]
+WantedBy=multi-user.target
