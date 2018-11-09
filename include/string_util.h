@@ -1,3 +1,6 @@
+#ifndef STRING_UTILS_H_
+#define STRING_UTILS_H_
+
 #include <string>
 
 // Escape any special characters to avoid issues with clientside string usage.
@@ -38,3 +41,5 @@ inline std::string escape_json(const std::string& input) {
   }
   return output;
 }
+
+#endif // STRING_UTILS_H_

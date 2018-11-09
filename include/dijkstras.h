@@ -1,3 +1,6 @@
+#ifndef DIJKSTRAS_H_
+#define DIJKSTRAS_H_
+
 #include <cstdint>
 #include <iostream>
 #include <string>
@@ -53,3 +56,5 @@ private:
   // Mapping of NodeID -> max distance to a landmark.
   std::vector<Weight>* heuristic_ = nullptr;
 };
+
+#endif // DIJKSTRAS_H_

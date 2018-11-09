@@ -1,3 +1,6 @@
+#ifndef ALT_H_
+#define ALT_H_
+
 #include <vector>
 
 #include "dijkstras.h"
@@ -50,3 +53,5 @@ private:
   RoadNetwork& road_network_;
   Dijkstras& dijkstras_;
 };
+
+#endif // ALT_H_
