@@ -43,9 +43,9 @@ server: build
 
 # Download and extract boost libraries
 install:
-	cd $(USR_LIB)
-	wget $(BOOST_DOWNLOAD_URL)
-	tar -xzf $(underscore_BOOST_VERSION).tar.gz
+	sudo cd $(USR_LIB)
+	sudo wget $(BOOST_DOWNLOAD_URL)
+	sudo tar -xzf $(underscore_BOOST_VERSION).tar.gz
 	cd $(PWD)
 
 format:
