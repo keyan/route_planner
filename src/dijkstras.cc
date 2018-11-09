@@ -1,13 +1,6 @@
-#include <functional>
-#include <queue>
 #include <utility>
 
 #include "dijkstras.h"
-
-using MinHeapPriorityQueue = std::priority_queue<
-    WeightedNode,
-    std::vector<WeightedNode>,
-    std::greater<std::vector<WeightedNode>::value_type>>;
 
 Weight Dijkstras::search(
     NodeID const& source_node_id,

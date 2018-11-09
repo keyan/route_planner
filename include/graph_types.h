@@ -2,7 +2,9 @@
 #define GRAPH_TYPES_H_
 
 #include <cstdint>
+#include <functional>
 #include <limits>
+#include <queue>
 #include <unordered_map>
 #include <unordered_set>
 #include <vector>
@@ -91,5 +93,10 @@ struct WeightedNode {
     return weight_ > other.weight_;
   }
 };
+
+using MinHeapPriorityQueue = std::priority_queue<
+    WeightedNode,
+    std::vector<WeightedNode>,
+    std::greater<std::vector<WeightedNode>::value_type>>;
 
 #endif // GRAPH_TYPES_H_
