@@ -47,6 +47,15 @@ struct Edge {
   NodeID head_node_id_;
   // Travel time in seconds.
   Weight weight_;
+  // When non-zero this value indicates that this edge was added as shortcut to
+  // bypass the contracted_node_id_. Should be used for recursive contracted
+  // graph unpacking.
+  NodeID contracted_node_id_ = 0;
+  // Whether the head node is in the downwards graph.
+  //
+  // Can we be used for indicating lower priority during bidirectional
+  // hierarchical search or node contraction.
+  bool downwards_ = false;
 };
 
 // Represents a single vertex in the graph, maps directly to an OSM node.
