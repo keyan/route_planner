@@ -17,12 +17,14 @@ $(document).ready(function(){
     var northEast = L.latLng(47.6503, -122.2716);
     map.setMaxBounds(L.latLngBounds(southWest, northEast));
 
-    L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}', {
-    attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
+    L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
+    attribution: '© <a href="https://www.mapbox.com/about/maps/">Mapbox</a> © <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> <strong><a href="https://www.mapbox.com/map-feedback/" target="_blank">Improve this map</a></strong>',
+    tileSize: 512,
     maxZoom: 18,
-    id: 'mapbox.streets',
+    zoomOffset: -1,
+    id: 'mapbox/streets-v11',
     accessToken: 'pk.eyJ1Ijoia3Bpc2hkYWRpYW4iLCJhIjoiY2pvMTVzN2lwMDdrbTNrcG9mb2RvcDF5aSJ9.wbFcMArvH5wSmVwvRomNmg'
-}).addTo(map);
+    }).addTo(map);
 
     source = L.marker([47.619872, -122.347477], {draggable: true}).addTo(map);
     target = L.marker([47.598289, -122.334700], {draggable: true}).addTo(map);
